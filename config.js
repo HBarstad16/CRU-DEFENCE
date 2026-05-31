@@ -89,7 +89,7 @@ const GAME_CONFIG = {
       upgrades: {
         damage: { maxLevel: 8, costBase: 55, costGrowth: 1.62, valueGrowth: 1.12 },
         range: { maxLevel: 3, costBase: 45, costGrowth: 1.52, valueGrowth: 1.08 },
-        speed: { maxLevel: 9, costBase: 70, costGrowth: 1.66, cooldownMultiplier: 0.84 }
+        speed: { maxLevel: 8, costBase: 70, costGrowth: 1.66, cooldownMultiplier: 0.84 }
       },
       description: "Billig og rask. Best mot mange små mål."
     },
@@ -119,7 +119,7 @@ const GAME_CONFIG = {
         type: "artillery",
         cooldown: 1600,
         radius: 300,
-        damage: 280,
+        damage: 300,
         description: "Kraftig eksplosjon rundt tårnet."
       },
       upgrades: {
@@ -176,7 +176,7 @@ const GAME_CONFIG = {
       role: "Lyn",
       icon: "assets/towers/Sebastian.png",
       price: 280,
-      maxPlaced: 4,
+      maxPlaced: 2,
       range: 120,
       damage: 46,
       cooldown: 50,
@@ -196,7 +196,7 @@ const GAME_CONFIG = {
         name: "Lyntornado",
         icon: "assets/abilities/lightning-storm.svg",
         type: "lightningTornado",
-        cooldown: 1400,
+        cooldown: 1600,
         duration: 200,
         radius: 115,
         pushDistance: 7.4,
