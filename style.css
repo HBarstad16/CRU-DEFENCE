@@ -744,3 +744,10 @@ button:disabled {
     order: 4;
   }
 }
+
+#speedBtn {
+  min-width: 130px;
+  min-height: 52px;
+  font-size: 15px;
+  padding: 12px 18px;
+}
