@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="no">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>CRU Tower Defence</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <main class="app">
+    <section class="hud panel">
+      <div>
+        <h1>CRU Defence</h1>
+      </div>
+
+      <div class="stats-grid">
+        <div>
+          <span>Liv</span>
+          <strong id="livesText">120</strong>
+        </div>
+        <div>
+          <span>Penger</span>
+          <strong id="moneyText">650</strong>
+        </div>
+        <div>
+          <span>Wave</span>
+          <strong id="waveText">1</strong>
+        </div>
+        <div>
+          <span>Score</span>
+          <strong id="scoreText">0</strong>
+        </div>
+      </div>
+
+      <div class="wave-box">
+        <span>Neste wave</span>
+        <strong id="waveNameText">Rekognosering</strong>
+        <small id="wavePreviewText">14 fiender</small>
+        <div id="wavePreviewList" class="wave-preview-list"></div>
+      </div>
+
+      <div class="controls-row">
+        <button id="startWaveBtn" class="primary-btn">Start wave</button>
+        <button id="pauseBtn" class="icon-btn" aria-label="Pause">II</button>
+      </div>
+
+      <div class="controls-row">
+        <button id="speedBtn">Speed: 1x</button>
+        <button id="restartBtn" class="danger-btn">Restart</button>
+      </div>
+
+      <p id="messageText" class="message">Velg et tårn og plasser det utenfor ruten.</p>
+
+      <div id="bossPanel" class="boss-panel hidden">
+        <div class="boss-row">
+          <span id="bossNameText">Boss</span>
+          <strong id="bossHpText">0%</strong>
+        </div>
+        <div class="boss-bar">
+          <div id="bossBarFill"></div>
+        </div>
+      </div>
+
+      <div class="achievement-panel">
+        <h2>Achievements</h2>
+        <button id="achievementDropdownBtn" class="achievement-dropdown-btn">Vis achievements</button>
+        <div id="achievementList" class="achievement-list"></div>
+      </div>
+
+      <div class="ability-panel">
+        <h2>Abilities</h2>
+        <div id="abilityList" class="ability-list">
+          <p class="empty-state">Plasser tårn for abilities.</p>
+        </div>
+      </div>
+    </section>
+
+    <section class="game-card">
+      <canvas id="gameCanvas" width="1280" height="768"></canvas>
+    </section>
+
+    <aside class="panel tower-panel">
+      <h2>Tårn</h2>
+      <button id="towerDropdownBtn" class="tower-dropdown-btn">Velg tårn</button>
+      <div id="towerSelect" class="tower-select"></div>
+
+      <div id="selectedTowerBox" class="info-box">Velg et tårn.</div>
+
+      <h2>Valgt tårn</h2>
+      <div id="selectedPlacedTowerBox" class="info-box">Klikk på et plassert tårn.</div>
+
+      <div class="upgrade-grid">
+        <button id="upgradeDamageBtn">Skade</button>
+        <button id="upgradeRangeBtn">Rekkevidde</button>
+        <button id="upgradeSpeedBtn">Fart</button>
+      </div>
+
+      <div class="controls-row">
+        <button id="targetModeBtn">Target: First</button>
+        <button id="sellTowerBtn" class="danger-btn">Selg</button>
+      </div>
+    </aside>
+  </main>
+
+  <div id="achievementToast" class="achievement-toast hidden"></div>
+
+  <script src="config.js"></script>
+  <script src="script.js"></script>
+</body>
+</html>
