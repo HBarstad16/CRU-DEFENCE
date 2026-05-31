@@ -187,7 +187,7 @@ const GAME_CONFIG = {
         name: "RIZZ Laser",
         icon: "assets/abilities/airstrike.svg",
         type: "airstrike",
-        cooldown: 20,
+        cooldown: 2000,
         damage: 420,
         armorPierce: 40,
         maxTargets: 12,
