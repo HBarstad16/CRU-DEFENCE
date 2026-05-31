@@ -275,6 +275,13 @@ class Enemy {
   }
 }
 
+function getTowerUpgradeConfig(towerType, kind) {
+  const towerUpgrade = GAME_CONFIG.towers[towerType]?.upgrades?.[kind];
+  const globalUpgrade = GAME_CONFIG.upgrades[kind];
+
+  return towerUpgrade || globalUpgrade;
+}
+
 class Tower {
   constructor(x, y, type) {
     const stats = GAME_CONFIG.towers[type];
@@ -399,16 +406,30 @@ class Tower {
   }
 
   getUpgradeCost(kind) {
-    const upgrade = GAME_CONFIG.upgrades[kind];
+    const upgrade = getTowerUpgradeConfig(this.type, kind);
     const currentLevel = this.levels[kind];
+
+    if (!upgrade) return null;
     if (currentLevel >= upgrade.maxLevel) return null;
+
     return Math.round(upgrade.costBase * Math.pow(upgrade.costGrowth, currentLevel - 1));
   }
 
   upgrade(kind) {
+    const upgradeConfig = getTowerUpgradeConfig(this.type, kind);
+    const globalUpgrade = GAME_CONFIG.upgrades[kind];
+
+    if (!upgradeConfig || !globalUpgrade) {
+      showMessage("Denne upgraden finnes ikke.");
+      return;
+    }
+
     const cost = this.getUpgradeCost(kind);
+
     if (cost === null) {
-      showMessage(`${GAME_CONFIG.upgrades[kind].label} er maks level.`);
+      showMessage(`${globalUpgrade.label} er maks level.`);
+      updateUI();
+      updatePlacedTowerInfo();
       return;
     }
 
@@ -422,20 +443,23 @@ class Tower {
     this.levels[kind]++;
 
     if (kind === "damage") {
-      this.damage = Math.round(this.damage * GAME_CONFIG.upgrades.damage.valueGrowth);
-      this.pierce += this.levels.damage === 4 ? 1 : 0;
+      this.damage = Math.round(this.damage * upgradeConfig.valueGrowth);
+
+      if (this.levels.damage === 4) {
+        this.pierce += 1;
+      }
     }
 
     if (kind === "range") {
-      this.range = Math.round(this.range * GAME_CONFIG.upgrades.range.valueGrowth);
+      this.range = Math.round(this.range * upgradeConfig.valueGrowth);
     }
 
     if (kind === "speed") {
-      this.cooldownMax = Math.max(6, Math.round(this.cooldownMax * GAME_CONFIG.upgrades.speed.cooldownMultiplier));
+      this.cooldownMax = Math.max(6, Math.round(this.cooldownMax * upgradeConfig.cooldownMultiplier));
     }
 
     effects.push(new RingEffect(this.x, this.y, this.range, this.color));
-    showMessage(`${this.name} oppgradert: ${GAME_CONFIG.upgrades[kind].label}.`);
+    showMessage(`${this.name} oppgradert: ${globalUpgrade.label}.`);
     updateUI();
     updatePlacedTowerInfo();
   }
@@ -1308,9 +1332,18 @@ function updateAchievements() {
 }
 
 function getUpgradeButtonText(kind, cost) {
-  const label = GAME_CONFIG.upgrades[kind].label;
+  if (!selectedPlacedTower) return "";
+
+  const globalUpgrade = GAME_CONFIG.upgrades[kind];
+  const towerUpgrade = getTowerUpgradeConfig(selectedPlacedTower.type, kind);
+
+  if (!globalUpgrade || !towerUpgrade) {
+    return "Upgrade mangler";
+  }
+
+  const label = globalUpgrade.label;
   const level = selectedPlacedTower.levels[kind];
-  const maxLevel = GAME_CONFIG.upgrades[kind].maxLevel;
+  const maxLevel = towerUpgrade.maxLevel;
 
   if (cost === null) {
     return `${label}\nLv ${level}/${maxLevel} - maks`;
