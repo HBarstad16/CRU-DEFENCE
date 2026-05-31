@@ -8,10 +8,8 @@
 </head>
 <body>
   <main class="app">
-    <section class="hud panel">
-      <div>
-        <h1>CRU Defence</h1>
-      </div>
+    <section class="top-bar panel">
+      <h1>CRU Defence</h1>
 
       <div class="stats-grid">
         <div>
@@ -49,8 +47,6 @@
         <button id="restartBtn" class="danger-btn">Restart</button>
       </div>
 
-      <p id="messageText" class="message">Velg et tårn og plasser det utenfor ruten.</p>
-
       <div id="bossPanel" class="boss-panel hidden">
         <div class="boss-row">
           <span id="bossNameText">Boss</span>
@@ -66,17 +62,18 @@
         <button id="achievementDropdownBtn" class="achievement-dropdown-btn">Vis achievements</button>
         <div id="achievementList" class="achievement-list"></div>
       </div>
-
-      <div class="ability-panel">
-        <h2>Abilities</h2>
-        <div id="abilityList" class="ability-list">
-          <p class="empty-state">Plasser tårn for abilities.</p>
-        </div>
-      </div>
     </section>
+
+    <aside class="ability-panel panel">
+      <h2>Abilities</h2>
+      <div id="abilityList" class="ability-list">
+        <p class="empty-state">Plasser tårn for abilities.</p>
+      </div>
+    </aside>
 
     <section class="game-card">
       <canvas id="gameCanvas" width="1280" height="768"></canvas>
+      <p id="messageText" class="message game-message">Velg et tårn og plasser det utenfor ruten.</p>
     </section>
 
     <aside class="panel tower-panel">
