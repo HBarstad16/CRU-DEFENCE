@@ -59,6 +59,7 @@ let spawnQueue = [];
 let selectedTowerType = null;
 let selectedPlacedTower = null;
 let hoveredTower = null;
+let abilityHoverTower = null;
 let pendingPlacement = null;
 let waveRunning = false;
 let spawnTimer = 0;
@@ -74,7 +75,7 @@ const achievementDefinitions = [
   { id: "firstBoss", label: "Drep første Simonsen", check: () => bossKills > 0 },
   { id: "unlockBergh", label: "Lås opp hemmelig tårn", check: () => unlockedTowerTypes.has("bergh") },
   { id: "noLivesLost20", label: "Wave 20 uten tapte liv", check: () => wave > 20 && lives === GAME_CONFIG.startingLives },
-  { id: "victory", label: "Fullfør alle 40 waves", check: () => victory }
+  { id: "victory", label: "Fullfør alle 100 waves", check: () => victory }
 ];
 const unlockedAchievements = new Set();
 let bossKills = 0;
@@ -248,12 +249,15 @@ class Enemy {
     if (!this.stats.children || this.reachedEnd) return;
 
     for (let i = 0; i < this.stats.children.count; i++) {
-      const offset = (i - (this.stats.children.count - 1) / 2) * 9;
+      const spacing = this.stats.childSpacing || 42;
+      const childDistance = Math.max(0, this.distanceTravelled - i * spacing);
+      const point = getPointAtPathDistance(childDistance);
+      const sideOffset = ((i % 2 === 0 ? 1 : -1) * Math.ceil(i / 2)) * 8;
       enemies.push(new Enemy(this.stats.children.type, {
-        x: this.x + offset,
-        y: this.y + offset,
-        pathIndex: this.pathIndex,
-        distanceTravelled: this.distanceTravelled,
+        x: point.x + sideOffset,
+        y: point.y + sideOffset,
+        pathIndex: getPathIndexAtPathDistance(childDistance),
+        distanceTravelled: childDistance,
         scale: Math.max(0.55, getWaveScale() * 0.72)
       }));
     }
@@ -607,6 +611,11 @@ class Tower {
     }
 
     if (this.ability.type === "lightningTornado") {
+      if (!enemies.some(enemy => enemy.alive)) {
+        showMessage(`${this.ability.name} trenger enemies på brettet.`);
+        return;
+      }
+
       effects.push(new LightningTornadoEffect(this, this.ability));
       effects.push(new RingEffect(this.x, this.y, this.range, "#facc15"));
     }
@@ -620,9 +629,15 @@ class Tower {
     const img = images[`tower-${this.type}`];
     const isSelected = this === selectedPlacedTower;
     const isHovered = this === hoveredTower;
+    const isAbilityHovered = this === abilityHoverTower;
 
-    if (isSelected || isHovered) {
-      drawRangeCircle(this.x, this.y, this.range, isSelected ? "rgba(34, 197, 94, 0.09)" : "rgba(147, 197, 253, 0.07)");
+    if (isSelected || isHovered || isAbilityHovered) {
+      drawRangeCircle(
+        this.x,
+        this.y,
+        this.range,
+        isSelected ? "rgba(34, 197, 94, 0.09)" : isAbilityHovered ? "rgba(250, 204, 21, 0.08)" : "rgba(147, 197, 253, 0.07)"
+      );
     }
 
     ctx.beginPath();
@@ -1014,13 +1029,21 @@ class LightningTornadoEffect {
     this.maxLife = ability.duration;
     this.tickTimer = 0;
     this.alive = true;
-    this.x = GAME_CONFIG.map.path[0].x;
-    this.y = GAME_CONFIG.map.path[0].y;
+    this.x = source.x;
+    this.y = source.y;
+    this.targetDistance = 0;
   }
 
   update() {
-    const progress = 1 - this.life / this.maxLife;
-    const point = getPointAtPathDistance(progress * totalPathLength);
+    const frontEnemy = enemies
+      .filter(enemy => enemy.alive)
+      .sort((a, b) => b.distanceTravelled - a.distanceTravelled)[0];
+
+    if (frontEnemy) {
+      this.targetDistance = Math.min(totalPathLength - 1, frontEnemy.distanceTravelled + (this.ability.frontOffset || 80));
+    }
+
+    const point = getPointAtPathDistance(this.targetDistance);
     this.x = point.x;
     this.y = point.y;
     this.tickTimer--;
@@ -1028,7 +1051,8 @@ class LightningTornadoEffect {
     if (this.tickTimer <= 0) {
       enemies.forEach(enemy => {
         if (!enemy.alive || Math.hypot(enemy.x - this.x, enemy.y - this.y) > this.ability.radius) return;
-        damageEnemy(enemy, this.ability.damage, this.source, this.ability.armorPierce);
+        moveEnemyToPathDistance(enemy, enemy.distanceTravelled - (this.ability.pushDistance || 6));
+        applySlow(enemy, 12, 0.25);
         effects.push(new LaserStrike(this.x, this.y, enemy.x, enemy.y, "#facc15"));
       });
       this.tickTimer = this.ability.tickRate;
@@ -1040,17 +1064,18 @@ class LightningTornadoEffect {
 
   draw() {
     const pulse = Math.sin(Date.now() / 55) * 6;
+    const remaining = this.life / this.maxLife;
     ctx.save();
     ctx.translate(this.x, this.y);
     ctx.rotate(Date.now() / 110);
 
-    ctx.globalAlpha = 0.34;
+    ctx.globalAlpha = 0.22 * remaining;
     ctx.beginPath();
     ctx.arc(0, 0, this.ability.radius + pulse, 0, Math.PI * 2);
     ctx.fillStyle = "#facc15";
     ctx.fill();
 
-    ctx.globalAlpha = 0.88;
+    ctx.globalAlpha = 0.9 * remaining;
     for (let i = 0; i < 6; i++) {
       const angle = (Math.PI * 2 * i) / 6;
       ctx.beginPath();
@@ -1060,6 +1085,11 @@ class LightningTornadoEffect {
       ctx.lineWidth = 5;
       ctx.stroke();
     }
+
+    ctx.beginPath();
+    ctx.arc(0, 0, 18 + pulse * 0.35, 0, Math.PI * 2);
+    ctx.fillStyle = "#fef3c7";
+    ctx.fill();
 
     ctx.globalAlpha = 1;
     ctx.restore();
@@ -1229,6 +1259,7 @@ function drawPlacementGhost() {
 function startWave() {
   if (waveRunning || gameOver || victory) return;
 
+  resetAbilityTimers();
   const waveConfig = getWaveConfig();
   spawnQueue = [];
   waveConfig.groups.forEach(group => {
@@ -1247,6 +1278,20 @@ function startWave() {
 function spawnEnemy(type) {
   if (!GAME_CONFIG.enemies[type]) return;
   enemies.push(new Enemy(type));
+}
+
+function resetAbilityTimers() {
+  towers.forEach(tower => {
+    tower.abilityCooldown = 0;
+    tower.abilityActiveTimer = 0;
+    tower.damageMultiplier = 1;
+    tower.fireRateMultiplier = 1;
+    tower.beamTarget = null;
+    tower.beamRamp = 1;
+  });
+  effects = effects.filter(effect => !(effect instanceof LightningTornadoEffect));
+  updateAbilityList();
+  updatePlacedTowerInfo();
 }
 
 function updateTowerDropdownLabel() {
@@ -1356,7 +1401,7 @@ function createAbilityCard(tower, index) {
       : "Klar";
 
   button.className = `ability-card ${isReady ? "ready" : ""} ${isActive ? "active" : ""} ${isLocked ? "locked" : ""}`;
-  button.disabled = !isReady;
+  button.setAttribute("aria-disabled", String(!isReady));
   button.innerHTML = `
     <img src="${abilityIcon}" alt="${tower.ability.name}">
     <span>
@@ -1373,12 +1418,24 @@ function createAbilityCard(tower, index) {
     updatePlacedTowerInfo();
   });
 
+  button.addEventListener("pointerenter", () => {
+    abilityHoverTower = tower;
+  });
+
+  button.addEventListener("pointerleave", () => {
+    if (abilityHoverTower === tower) abilityHoverTower = null;
+  });
+
   return button;
 }
 
 function updateAbilityList() {
   const abilityTowers = towers.filter(tower => tower.ability);
   abilityList.innerHTML = "";
+
+  if (abilityHoverTower && !abilityTowers.includes(abilityHoverTower)) {
+    abilityHoverTower = null;
+  }
 
   if (abilityTowers.length === 0) {
     const empty = document.createElement("p");
@@ -1554,6 +1611,26 @@ function getPointAtPathDistance(distance) {
   }
 
   return GAME_CONFIG.map.path[GAME_CONFIG.map.path.length - 1];
+}
+
+function getPathIndexAtPathDistance(distance) {
+  let remaining = Math.max(0, Math.min(totalPathLength, distance));
+
+  for (let index = 0; index < pathSegments.length; index++) {
+    if (remaining <= pathSegments[index].length) return index;
+    remaining -= pathSegments[index].length;
+  }
+
+  return Math.max(0, GAME_CONFIG.map.path.length - 2);
+}
+
+function moveEnemyToPathDistance(enemy, distance) {
+  const nextDistance = Math.max(0, Math.min(totalPathLength - 1, distance));
+  const point = getPointAtPathDistance(nextDistance);
+  enemy.distanceTravelled = nextDistance;
+  enemy.pathIndex = getPathIndexAtPathDistance(nextDistance);
+  enemy.x = point.x;
+  enemy.y = point.y;
 }
 
 function isOnPath(x, y) {
@@ -1813,6 +1890,7 @@ function updateSpawning() {
       showMessage(`Wave fullført. Bonus: ${formatMoney(bonus)}.`);
     }
 
+    resetAbilityTimers();
     updateUI();
   }
 }
@@ -1830,6 +1908,7 @@ function restartGame() {
   selectedTowerType = null;
   selectedPlacedTower = null;
   hoveredTower = null;
+  abilityHoverTower = null;
   pendingPlacement = null;
   waveRunning = false;
   spawnTimer = 0;
