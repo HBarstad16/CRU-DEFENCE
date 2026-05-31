@@ -747,7 +747,7 @@ button:disabled {
 
 #speedBtn {
   min-width: 130px;
-  min-height: 52px;
+  min-height: 30px;
   font-size: 15px;
   padding: 12px 18px;
 }
