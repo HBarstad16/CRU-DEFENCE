@@ -28,7 +28,7 @@ const GAME_CONFIG = {
       icon: "assets/towers/Skulbru.png",
       price: 160,
       range: 130,
-      damage: 38,
+      damage: 30,
       cooldown: 38,
       bulletSpeed: 10,
       bulletSize: 5,
@@ -79,7 +79,7 @@ const GAME_CONFIG = {
         cooldown: 780,
         duration: 360,
         tickRate: 5,
-        baseDamage: 10,
+        baseDamage: 20,
         rampPerTick: 0.09,
         maxRamp: 5.5,
         description: "Låser en inferno-ildstråle på ett mål og gjør mer skade jo lenger den brenner."
@@ -98,7 +98,7 @@ const GAME_CONFIG = {
       icon: "assets/towers/Aaberg.png",
       price: 245,
       range: 260,
-      damage: 50,
+      damage: 35,
       cooldown: 74,
       bulletSpeed: 10,
       bulletSize: 7,
@@ -109,7 +109,7 @@ const GAME_CONFIG = {
       effectIcon: "assets/effects/aaberg-explosion.svg",
       pierce: 1,
       splash: true,
-      splashRadius: 72,
+      splashRadius: 90,
       ability: {
         name: "Artilleri",
         icon: "assets/abilities/artillery.svg",
@@ -122,7 +122,7 @@ const GAME_CONFIG = {
       upgrades: {
         damage: { maxLevel: 6, costBase: 115, costGrowth: 1.82, valueGrowth: 1.20 },
         range: { maxLevel: 6, costBase: 90, costGrowth: 1.70, valueGrowth: 1.12 },
-        speed: { maxLevel: 5, costBase: 125, costGrowth: 1.88, cooldownMultiplier: 0.90 }
+        speed: { maxLevel: 5, costBase: 125, costGrowth: 1.88, cooldownMultiplier: 0.95 }
       },
       description: "Dyr, men har splash damage og lang rekkevidde."
     },
@@ -133,7 +133,7 @@ const GAME_CONFIG = {
       icon: "assets/towers/Lilja.png",
       price: 135,
       range: 130,
-      damage: 12,
+      damage: 17,
       cooldown: 42,
       bulletSpeed: 8,
       bulletSize: 5,
@@ -141,6 +141,8 @@ const GAME_CONFIG = {
       projectile: "pulse",
       projectileIcon: "assets/projectiles/pulse.svg",
       hitEffect: "emp",
+      slowEffect: 260,
+      slowMultiplier: 0.22,
       pierce: 2,
       splash: true,
       splashRadius: 30,
@@ -203,8 +205,8 @@ const GAME_CONFIG = {
       name: "Bergh og Erna",
       role: "Hemmelig",
       icon: "assets/towers/Bergh.png",
-      unlockCost: 2500,
-      price: 900,
+      unlockCost: 6000,
+      price: 1500,
       range: 200,
       damage: 200,
       cooldown: 50,
