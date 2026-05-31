@@ -92,6 +92,7 @@ const pathSegments = GAME_CONFIG.map.path.slice(0, -1).map((point, index) => {
     length: Math.hypot(next.x - point.x, next.y - point.y)
   };
 });
+const totalPathLength = pathSegments.reduce((total, segment) => total + segment.length, 0);
 
 function loadImage(key, src) {
   const img = new Image();
@@ -147,6 +148,25 @@ function formatMoney(value) {
 
 function isTowerUnlocked(type) {
   return unlockedTowerTypes.has(type);
+}
+
+function getTowerPlacementCount(type) {
+  return towers.filter(tower => tower.type === type).length;
+}
+
+function getTowerPlacementLimit(type) {
+  const limit = GAME_CONFIG.towers[type]?.maxPlaced;
+  return Number.isFinite(limit) && limit >= 0 ? limit : Infinity;
+}
+
+function isTowerLimitReached(type) {
+  return getTowerPlacementCount(type) >= getTowerPlacementLimit(type);
+}
+
+function getTowerLimitText(type) {
+  const count = getTowerPlacementCount(type);
+  const limit = getTowerPlacementLimit(type);
+  return limit === Infinity ? `${count}/∞ plassert` : `${count}/${limit} plassert`;
 }
 
 class Enemy {
@@ -319,6 +339,10 @@ class Tower {
     this.splashRadius = stats.splashRadius || 0;
     this.slowEffect = stats.slowEffect || 0;
     this.slowMultiplier = stats.slowMultiplier || 1;
+    this.chainLightning = stats.chainLightning || false;
+    this.chainTargets = stats.chainTargets || 0;
+    this.chainRadius = stats.chainRadius || 0;
+    this.chainDamageMultiplier = stats.chainDamageMultiplier || 0.5;
 
     this.levels = { damage: 1, range: 1, speed: 1 };
     this.size = 94;
@@ -582,6 +606,11 @@ class Tower {
       });
     }
 
+    if (this.ability.type === "lightningTornado") {
+      effects.push(new LightningTornadoEffect(this, this.ability));
+      effects.push(new RingEffect(this.x, this.y, this.range, "#facc15"));
+    }
+
     this.abilityCooldown = this.ability.cooldown;
     showMessage(`${this.name}: ${this.ability.name}!`);
     updatePlacedTowerInfo();
@@ -641,6 +670,10 @@ class Bullet {
     this.slowMultiplier = tower.slowMultiplier;
     this.pierce = tower.pierce;
     this.armorPierce = tower.armorPierce;
+    this.chainLightning = tower.chainLightning;
+    this.chainTargets = tower.chainTargets;
+    this.chainRadius = tower.chainRadius;
+    this.chainDamageMultiplier = tower.chainDamageMultiplier;
     this.crit = Math.random() < tower.critChance;
     this.alive = true;
   }
@@ -700,6 +733,19 @@ class Bullet {
       }
     });
 
+    if (this.chainLightning) {
+      const chained = enemies
+        .filter(enemy => enemy.alive && !targets.includes(enemy) && Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.chainRadius)
+        .sort((a, b) => Math.hypot(a.x - this.x, a.y - this.y) - Math.hypot(b.x - this.x, b.y - this.y))
+        .slice(0, this.chainTargets);
+
+      chained.forEach(enemy => {
+        effects.push(new LaserStrike(this.x, this.y, enemy.x, enemy.y, "#facc15"));
+        effects.push(new ParticleBurst(enemy.x, enemy.y, "#facc15", 7, "lightning"));
+        damageEnemy(enemy, Math.round(damage * this.chainDamageMultiplier), this.source, this.armorPierce);
+      });
+    }
+
     if (this.crit) {
       effects.push(new FloatingText("CRIT", this.x, this.y - 18, "#facc15"));
     }
@@ -707,7 +753,7 @@ class Bullet {
 
   draw() {
     if (this.icon && this.icon.complete) {
-      const isRoundProjectile = this.projectile === "pulse" || this.projectile === "popcorn";
+      const isRoundProjectile = this.projectile === "pulse" || this.projectile === "popcorn" || this.projectile === "lightning";
       const width = isRoundProjectile ? this.size * 5 : this.size * 8;
       const height = isRoundProjectile ? this.size * 5 : this.size * 3.2;
 
@@ -831,7 +877,7 @@ class ParticleBurst {
       } else {
         ctx.arc(particle.x, particle.y, particle.size, 0, Math.PI * 2);
       }
-      ctx.fillStyle = this.style === "emp" ? "#67e8f9" : this.style === "lava" ? "#fb923c" : this.color;
+      ctx.fillStyle = this.style === "emp" ? "#67e8f9" : this.style === "lava" ? "#fb923c" : this.style === "lightning" ? "#facc15" : this.color;
       ctx.fill();
     });
     ctx.globalAlpha = 1;
@@ -960,6 +1006,66 @@ class BoardBombEffect {
   }
 }
 
+class LightningTornadoEffect {
+  constructor(source, ability) {
+    this.source = source;
+    this.ability = ability;
+    this.life = ability.duration;
+    this.maxLife = ability.duration;
+    this.tickTimer = 0;
+    this.alive = true;
+    this.x = GAME_CONFIG.map.path[0].x;
+    this.y = GAME_CONFIG.map.path[0].y;
+  }
+
+  update() {
+    const progress = 1 - this.life / this.maxLife;
+    const point = getPointAtPathDistance(progress * totalPathLength);
+    this.x = point.x;
+    this.y = point.y;
+    this.tickTimer--;
+
+    if (this.tickTimer <= 0) {
+      enemies.forEach(enemy => {
+        if (!enemy.alive || Math.hypot(enemy.x - this.x, enemy.y - this.y) > this.ability.radius) return;
+        damageEnemy(enemy, this.ability.damage, this.source, this.ability.armorPierce);
+        effects.push(new LaserStrike(this.x, this.y, enemy.x, enemy.y, "#facc15"));
+      });
+      this.tickTimer = this.ability.tickRate;
+    }
+
+    this.life--;
+    this.alive = this.life > 0;
+  }
+
+  draw() {
+    const pulse = Math.sin(Date.now() / 55) * 6;
+    ctx.save();
+    ctx.translate(this.x, this.y);
+    ctx.rotate(Date.now() / 110);
+
+    ctx.globalAlpha = 0.34;
+    ctx.beginPath();
+    ctx.arc(0, 0, this.ability.radius + pulse, 0, Math.PI * 2);
+    ctx.fillStyle = "#facc15";
+    ctx.fill();
+
+    ctx.globalAlpha = 0.88;
+    for (let i = 0; i < 6; i++) {
+      const angle = (Math.PI * 2 * i) / 6;
+      ctx.beginPath();
+      ctx.moveTo(Math.cos(angle) * 12, Math.sin(angle) * 12);
+      ctx.lineTo(Math.cos(angle + 0.45) * (this.ability.radius * 0.85), Math.sin(angle + 0.45) * (this.ability.radius * 0.85));
+      ctx.strokeStyle = i % 2 === 0 ? "#fef3c7" : "#38bdf8";
+      ctx.lineWidth = 5;
+      ctx.stroke();
+    }
+
+    ctx.globalAlpha = 1;
+    ctx.restore();
+  }
+}
+
 class RingEffect {
   constructor(x, y, radius, color) {
     this.x = x;
@@ -1003,6 +1109,13 @@ function spawnHitEffect(kind, x, y, color, icon = null) {
   if (kind === "pierce") {
     effects.push(new LaserStrike(x - 22, y - 8, x + 22, y + 8, color));
     effects.push(new ParticleBurst(x, y, color, 8, kind));
+    return;
+  }
+
+  if (kind === "lightning") {
+    effects.push(new LaserStrike(x - 26, y - 22, x + 26, y + 22, "#facc15"));
+    effects.push(new LaserStrike(x - 18, y + 20, x + 20, y - 18, "#38bdf8"));
+    effects.push(new ParticleBurst(x, y, "#facc15", 12, kind));
     return;
   }
 
@@ -1104,7 +1217,7 @@ function drawPlacementGhost() {
   if (!mouse.inside || selectedPlacedTower || gameOver || !selectedTowerType) return;
 
   const tower = GAME_CONFIG.towers[selectedTowerType];
-  const valid = canPlaceTower(mouse.x, mouse.y).ok && money >= tower.price;
+  const valid = canPlaceTower(mouse.x, mouse.y, selectedTowerType).ok && money >= tower.price;
 
   drawRangeCircle(mouse.x, mouse.y, tower.range, valid ? "rgba(34, 197, 94, 0.07)" : "rgba(248, 113, 113, 0.08)");
   ctx.beginPath();
@@ -1154,15 +1267,17 @@ function createTowerMenu() {
     const card = document.createElement("div");
     card.className = "tower-card";
     const locked = !isTowerUnlocked(key);
+    const limitReached = !locked && isTowerLimitReached(key);
     if (key === selectedTowerType) card.classList.add("selected");
     if (locked) card.classList.add("locked");
+    if (limitReached) card.classList.add("limit-reached");
 
     card.innerHTML = `
       <span class="secret-icon">${locked ? "?" : `<img src="${tower.icon}" alt="${tower.name}">`}</span>
       <span>
         <strong>${locked ? "Hemmelig tårn" : tower.name}</strong>
         <span>${locked ? `Lås opp: ${formatMoney(tower.unlockCost)}` : formatMoney(tower.price)}</span>
-        <small>${locked ? "Kjøp tilgang for å avsløre" : tower.role}</small>
+        <small>${locked ? "Kjøp tilgang for å avsløre" : `${tower.role} · ${getTowerLimitText(key)}`}</small>
       </span>
     `;
 
@@ -1178,6 +1293,11 @@ function createTowerMenu() {
         showMessage(`${tower.name} er avslørt. Nå kan du kjøpe tårnet.`);
         createTowerMenu();
         updateUI();
+        return;
+      }
+
+      if (limitReached) {
+        showMessage(`Du kan bare ha ${getTowerPlacementLimit(key)} av ${tower.name}.`);
         return;
       }
 
@@ -1211,6 +1331,7 @@ function updateSelectedTowerInfo() {
   selectedTowerBox.innerHTML = `
     <strong>${tower.name}</strong> - ${tower.role}<br>
     Pris: ${formatMoney(tower.price)}<br>
+    Antall: ${getTowerLimitText(selectedTowerType)}<br>
     Skade: ${tower.damage} | Fart: ${tower.cooldown}<br>
     Rekkevidde: ${tower.range} | Pierce: ${tower.pierce || 1}<br>
     Prosjektil: ${tower.projectile}<br>
@@ -1417,6 +1538,24 @@ function distanceToSegment(point, a, b) {
   return Math.hypot(point.x - projection.x, point.y - projection.y);
 }
 
+function getPointAtPathDistance(distance) {
+  let remaining = Math.max(0, Math.min(totalPathLength, distance));
+
+  for (const segment of pathSegments) {
+    if (remaining <= segment.length) {
+      const ratio = segment.length === 0 ? 0 : remaining / segment.length;
+      return {
+        x: segment.a.x + (segment.b.x - segment.a.x) * ratio,
+        y: segment.a.y + (segment.b.y - segment.a.y) * ratio
+      };
+    }
+
+    remaining -= segment.length;
+  }
+
+  return GAME_CONFIG.map.path[GAME_CONFIG.map.path.length - 1];
+}
+
 function isOnPath(x, y) {
   return pathSegments.some(segment => distanceToSegment({ x, y }, segment.a, segment.b) < GAME_CONFIG.map.pathWidth / 2 + 22);
 }
@@ -1446,7 +1585,12 @@ function updateCanvasCursor() {
   canvas.style.cursor = hoveredTower ? "pointer" : "default";
 }
 
-function canPlaceTower(x, y) {
+function canPlaceTower(x, y, type = selectedTowerType) {
+  if (type && isTowerLimitReached(type)) {
+    const tower = GAME_CONFIG.towers[type];
+    return { ok: false, reason: `Du kan bare ha ${getTowerPlacementLimit(type)} av ${tower.name}.` };
+  }
+
   if (x < 36 || y < 36 || x > canvas.width - 36 || y > canvas.height - 36) {
     return { ok: false, reason: "For nær kanten." };
   }
@@ -1516,7 +1660,7 @@ canvas.addEventListener("click", (event) => {
   }
 
   const towerStats = GAME_CONFIG.towers[selectedTowerType];
-  const placement = canPlaceTower(x, y);
+  const placement = canPlaceTower(x, y, selectedTowerType);
 
   if (money < towerStats.price) {
     showMessage(`Du trenger ${formatMoney(towerStats.price - money)} mer for ${towerStats.name}.`);
@@ -1607,6 +1751,10 @@ sellTowerBtn.addEventListener("click", () => {
   money += value;
   showMessage(`Solgte tårn for ${formatMoney(value)}.`);
   selectedPlacedTower = null;
+  createTowerMenu();
+  updateSelectedTowerInfo();
+  updatePlacedTowerInfo();
+  updateCanvasCursor();
   updateUI();
 });
 
