@@ -1358,6 +1358,9 @@ function createTowerMenu() {
       selectedTowerType = selectedTowerType === key ? null : key;
       selectedPlacedTower = null;
       pendingPlacement = null;
+
+      towerSelect.classList.remove("open");
+      
       createTowerMenu();
       updateSelectedTowerInfo();
       updatePlacedTowerInfo();
