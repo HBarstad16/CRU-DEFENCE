@@ -236,7 +236,7 @@ const GAME_CONFIG = {
         cooldown: 1000,
         damage: 420,
         armorPierce: 40,
-        maxTargets: 12,
+        maxTargets: 75,
         description: "Presis luftangrep mot de fiendene som har kommet lengst."
       },
       upgrades: {
