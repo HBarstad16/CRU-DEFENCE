@@ -645,7 +645,7 @@ class Tower {
         this.x,
         this.y,
         this.range,
-        isSelected ? "rgba(34, 197, 94, 0.09)" : isAbilityHovered ? "rgba(250, 204, 21, 0.08)" : "rgba(147, 197, 253, 0.07)"
+        isSelected ? "rgba(34, 197, 94, 0.09)" : isAbilityHovered ? "rgba(239, 68, 68, 0.14)" : "rgba(147, 197, 253, 0.07)"
       );
     }
 
@@ -1435,7 +1435,9 @@ function createAbilityCard(tower, index) {
   });
 
   button.addEventListener("pointerleave", () => {
-    if (abilityHoverTower === tower) abilityHoverTower = null;
+  if (abilityHoverTower === tower) {
+    abilityHoverTower = null;
+    }
   });
 
   return button;
