@@ -50,7 +50,7 @@ const GAME_CONFIG = {
         description: "Dobbel skytefart og mer skade en kort stund."
       },
       upgrades: {
-        damage: { maxLevel: 7, costBase: 75, costGrowth: 1.68, valueGrowth: 1.26 },
+        damage: { maxLevel: 6, costBase: 75, costGrowth: 1.68, valueGrowth: 1.26 },
         range: { maxLevel: 4, costBase: 65, costGrowth: 1.58, valueGrowth: 1.10 },
         speed: { maxLevel: 4, costBase: 85, costGrowth: 1.70, cooldownMultiplier: 0.85 }
       },
@@ -111,12 +111,12 @@ const GAME_CONFIG = {
       splash: true,
       splashRadius: 90,
       ability: {
-        name: "Artilleri",
+        name: "Bombe",
         icon: "assets/abilities/artillery.svg",
         type: "artillery",
-        cooldown: 900,
-        radius: 190,
-        damage: 260,
+        cooldown: 1600,
+        radius: 250,
+        damage: 280,
         description: "Kraftig eksplosjon rundt tårnet."
       },
       upgrades: {
@@ -184,10 +184,10 @@ const GAME_CONFIG = {
       pierce: 2,
       armorPierce: 18,
       ability: {
-        name: "Airstrike",
+        name: "RIZZ Laser",
         icon: "assets/abilities/airstrike.svg",
         type: "airstrike",
-        cooldown: 1100,
+        cooldown: 20,
         damage: 420,
         armorPierce: 40,
         maxTargets: 12,
@@ -195,7 +195,7 @@ const GAME_CONFIG = {
       },
       upgrades: {
         damage: { maxLevel: 6, costBase: 145, costGrowth: 1.90, valueGrowth: 1.24 },
-        range: { maxLevel: 6, costBase: 110, costGrowth: 1.72, valueGrowth: 1.11 },
+        range: { maxLevel: 7, costBase: 110, costGrowth: 1.72, valueGrowth: 1.11 },
         speed: { maxLevel: 5, costBase: 150, costGrowth: 1.92, cooldownMultiplier: 0.85 }
       },
       description: "Treig, presis og sterk mot armored og boss-fiender."
