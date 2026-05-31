@@ -50,7 +50,7 @@ const GAME_CONFIG = {
         description: "Dobbel skytefart og mer skade en kort stund."
       },
       upgrades: {
-        damage: { maxLevel: 6, costBase: 75, costGrowth: 1.68, valueGrowth: 1.26 },
+        damage: { maxLevel: 6, costBase: 75, costGrowth: 1.68, valueGrowth: 1.18 },
         range: { maxLevel: 4, costBase: 65, costGrowth: 1.58, valueGrowth: 1.10 },
         speed: { maxLevel: 4, costBase: 85, costGrowth: 1.70, cooldownMultiplier: 0.85 }
       },
