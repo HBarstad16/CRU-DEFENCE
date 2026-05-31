@@ -2,7 +2,7 @@ const GAME_CONFIG = {
   startingLives: 120,
   startingMoney: 400,
   waveBonus: 100,
-  maxWaves: 40,
+  maxWaves: 100,
 
   map: {
     image: "assets/maps/map.png",
@@ -118,7 +118,7 @@ const GAME_CONFIG = {
         icon: "assets/abilities/artillery.svg",
         type: "artillery",
         cooldown: 1600,
-        radius: 250,
+        radius: 300,
         damage: 280,
         description: "Kraftig eksplosjon rundt tårnet."
       },
@@ -127,7 +127,7 @@ const GAME_CONFIG = {
         range: { maxLevel: 4, costBase: 90, costGrowth: 1.70, valueGrowth: 1.20 },
         speed: { maxLevel: 4, costBase: 125, costGrowth: 1.88, cooldownMultiplier: 0.90 }
       },
-      description: "Dyr, men har splash damage og lang rekkevidde."
+      description: "splash damage og lang rekkevidde."
     },
 
     lilja: {
@@ -197,12 +197,12 @@ const GAME_CONFIG = {
         icon: "assets/abilities/lightning-storm.svg",
         type: "lightningTornado",
         cooldown: 980,
-        duration: 420,
-        radius: 95,
-        damage: 82,
-        tickRate: 8,
-        armorPierce: 18,
-        description: "Sender en lyntornado langs hele løypa som skader fiender i nærheten."
+        duration: 240,
+        radius: 115,
+        pushDistance: 7.4,
+        tickRate: 2,
+        frontOffset: 85,
+        description: "Lager en lyntornado foran fremste fiende som pusher fiender bakover i 4 sekunder."
       },
       upgrades: {
         damage: { maxLevel: 6, costBase: 105, costGrowth: 1.74, valueGrowth: 1.16 },
@@ -233,7 +233,7 @@ const GAME_CONFIG = {
         name: "RIZZ Laser",
         icon: "assets/abilities/airstrike.svg",
         type: "airstrike",
-        cooldown: 20,
+        cooldown: 2000,
         damage: 420,
         armorPierce: 40,
         maxTargets: 12,
@@ -320,7 +320,8 @@ const GAME_CONFIG = {
       damage: 4,
       size: 36,
       color: "#fb7185",
-      children: { type: "swarm", count: 2 }
+      children: { type: "swarm", count: 2 },
+      childSpacing: 48
     },
 
     fighter: {
@@ -332,7 +333,8 @@ const GAME_CONFIG = {
       damage: 5,
       size: 40,
       color: "#c084fc",
-      children: { type: "drone", count: 4 }
+      children: { type: "drone", count: 4 },
+      childSpacing: 54
     },
 
     eliteFighter: {
@@ -345,7 +347,8 @@ const GAME_CONFIG = {
       size: 58,
       color: "#f0abfc",
       armor: 12,
-      children: { type: "fighter", count: 2 }
+      children: { type: "fighter", count: 2 },
+      childSpacing: 64
     },
 
     armored: {
@@ -358,7 +361,8 @@ const GAME_CONFIG = {
       size: 46,
       color: "#94a3b8",
       armor: 16,
-      children: { type: "missile", count: 2 }
+      children: { type: "missile", count: 2 },
+      childSpacing: 62
     },
 
     regenerator: {
@@ -371,7 +375,8 @@ const GAME_CONFIG = {
       size: 42,
       color: "#4ade80",
       regen: 0.23,
-      children: { type: "swarm", count: 4 }
+      children: { type: "swarm", count: 4 },
+      childSpacing: 50
     },
 
     boss: {
@@ -384,7 +389,8 @@ const GAME_CONFIG = {
       size: 90,
       color: "#f97316",
       armor: 30,
-      children: { type: "fighter", count: 4 }
+      children: { type: "fighter", count: 4 },
+      childSpacing: 72
     }
   },
 
@@ -457,3 +463,33 @@ const GAME_CONFIG = {
     { name: "Wave 40", groups: [{ type: "boss", count: 6, gap: 100 }, { type: "eliteFighter", count: 24, gap: 24 }, { type: "armored", count: 34, gap: 16 }, { type: "swarm", count: 120, gap: 4 }] }
   ]
 };
+
+for (let waveNumber = GAME_CONFIG.waves.length + 1; waveNumber <= GAME_CONFIG.maxWaves; waveNumber++) {
+  const extraIndex = waveNumber - 40;
+  const tier = Math.floor((waveNumber - 41) / 10);
+  const groups = [
+    { type: "swarm", count: 120 + extraIndex * 5 + tier * 16, gap: Math.max(3, 5 - Math.floor(tier / 2)) },
+    { type: "missile", count: 58 + extraIndex * 2 + tier * 8, gap: Math.max(6, 12 - tier) },
+    { type: "fighter", count: 42 + extraIndex * 2 + tier * 7, gap: Math.max(7, 13 - tier) },
+    { type: "eliteFighter", count: 16 + extraIndex + tier * 5, gap: Math.max(14, 28 - tier * 2) }
+  ];
+
+  if (waveNumber % 3 === 0) {
+    groups.push({ type: "armored", count: 22 + extraIndex + tier * 5, gap: Math.max(10, 18 - tier) });
+  }
+
+  if (waveNumber % 4 === 0) {
+    groups.push({ type: "regenerator", count: 18 + extraIndex + tier * 4, gap: Math.max(10, 18 - tier) });
+  }
+
+  if (waveNumber % 5 === 0) {
+    groups.unshift({ type: "boss", count: 4 + tier + Math.floor(extraIndex / 12), gap: Math.max(80, 130 - tier * 6) });
+  }
+
+  if (waveNumber === GAME_CONFIG.maxWaves) {
+    groups.unshift({ type: "boss", count: 12, gap: 70 });
+    groups.push({ type: "eliteFighter", count: 90, gap: 12 });
+  }
+
+  GAME_CONFIG.waves.push({ name: `Wave ${waveNumber}`, groups });
+}
