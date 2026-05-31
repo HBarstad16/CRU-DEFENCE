@@ -29,7 +29,7 @@ const GAME_CONFIG = {
       price: 160,
       range: 130,
       damage: 30,
-      cooldown: 38,
+      cooldown: 28,
       bulletSpeed: 10,
       bulletSize: 5,
       color: "#60a5fa",
@@ -51,8 +51,8 @@ const GAME_CONFIG = {
       },
       upgrades: {
         damage: { maxLevel: 7, costBase: 75, costGrowth: 1.68, valueGrowth: 1.16 },
-        range: { maxLevel: 3, costBase: 65, costGrowth: 1.58, valueGrowth: 1.08 },
-        speed: { maxLevel: 3, costBase: 85, costGrowth: 1.70, cooldownMultiplier: 0.93 }
+        range: { maxLevel: 4, costBase: 65, costGrowth: 1.58, valueGrowth: 1.08 },
+        speed: { maxLevel: 4, costBase: 85, costGrowth: 1.70, cooldownMultiplier: 0.93 }
       },
       description: "Stor gutt som spiser alt han ser."
     },
