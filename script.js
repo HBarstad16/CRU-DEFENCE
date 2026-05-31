@@ -170,11 +170,20 @@ function getTowerLimitText(type) {
   return limit === Infinity ? `${count}/∞ plassert` : `${count}/${limit} plassert`;
 }
 
+function getEnemyHpMultiplier() {
+  if (wave <= 40) return 1;
+
+  const wavesAfter40 = wave - 40;
+
+  return 1 + wavesAfter40 * 0.08;
+}
 class Enemy {
   constructor(type, options = {}) {
     const stats = GAME_CONFIG.enemies[type];
     const scale = options.scale || getWaveScale();
+    const hpMultiplier = getEnemyHpMultiplier();
 
+    
     this.type = type;
     this.stats = stats;
     this.x = options.x ?? GAME_CONFIG.map.path[0].x;
@@ -182,7 +191,7 @@ class Enemy {
     this.pathIndex = options.pathIndex ?? 0;
     this.distanceTravelled = options.distanceTravelled ?? 0;
 
-    this.maxHp = Math.round((stats.hp + wave * 7) * scale);
+    this.maxHp = Math.round((stats.hp + wave * 7) * scale * hpMultiplier);
     this.hp = options.hp ?? this.maxHp;
     this.baseSpeed = stats.speed + Math.min(wave * 0.018, 0.42);
     this.speed = this.baseSpeed;
