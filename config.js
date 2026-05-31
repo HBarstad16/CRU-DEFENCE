@@ -1,7 +1,7 @@
 const GAME_CONFIG = {
   startingLives: 120,
-  startingMoney: 650,
-  waveBonus: 135,
+  startingMoney: 400,
+  waveBonus: 100,
   maxWaves: 40,
 
   map: {
@@ -27,7 +27,7 @@ const GAME_CONFIG = {
       role: "Multirolle",
       icon: "assets/towers/Skulbru.png",
       price: 160,
-      range: 185,
+      range: 130,
       damage: 38,
       cooldown: 38,
       bulletSpeed: 10,
@@ -51,8 +51,8 @@ const GAME_CONFIG = {
       },
       upgrades: {
         damage: { maxLevel: 7, costBase: 75, costGrowth: 1.68, valueGrowth: 1.16 },
-        range: { maxLevel: 6, costBase: 65, costGrowth: 1.58, valueGrowth: 1.10 },
-        speed: { maxLevel: 3, costBase: 85, costGrowth: 1.70, cooldownMultiplier: 0.88 }
+        range: { maxLevel: 3, costBase: 65, costGrowth: 1.58, valueGrowth: 1.08 },
+        speed: { maxLevel: 3, costBase: 85, costGrowth: 1.70, cooldownMultiplier: 0.93 }
       },
       description: "Stor gutt som spiser alt han ser."
     },
@@ -62,7 +62,7 @@ const GAME_CONFIG = {
       role: "Rask ild",
       icon: "assets/towers/Leah.png",
       price: 110,
-      range: 145,
+      range: 130,
       damage: 18,
       cooldown: 16,
       bulletSpeed: 9,
@@ -86,7 +86,7 @@ const GAME_CONFIG = {
       },
       upgrades: {
         damage: { maxLevel: 8, costBase: 55, costGrowth: 1.62, valueGrowth: 1.12 },
-        range: { maxLevel: 5, costBase: 45, costGrowth: 1.52, valueGrowth: 1.08 },
+        range: { maxLevel: 3, costBase: 45, costGrowth: 1.52, valueGrowth: 1.08 },
         speed: { maxLevel: 9, costBase: 70, costGrowth: 1.66, cooldownMultiplier: 0.84 }
       },
       description: "Billig og rask. Best mot mange små mål."
@@ -132,7 +132,7 @@ const GAME_CONFIG = {
       role: "Kontroll",
       icon: "assets/towers/Lilja.png",
       price: 135,
-      range: 175,
+      range: 130,
       damage: 12,
       cooldown: 42,
       bulletSpeed: 8,
@@ -159,7 +159,7 @@ const GAME_CONFIG = {
       },
       upgrades: {
         damage: { maxLevel: 6, costBase: 60, costGrowth: 1.55, valueGrowth: 1.10 },
-        range: { maxLevel: 7, costBase: 70, costGrowth: 1.62, valueGrowth: 1.10 },
+        range: { maxLevel: 3, costBase: 70, costGrowth: 1.62, valueGrowth: 1.10 },
         speed: { maxLevel: 6, costBase: 85, costGrowth: 1.70, cooldownMultiplier: 0.88 }
       },
       description: "Lav skade, men senker fiender og gir andre tårn tid."
@@ -170,7 +170,7 @@ const GAME_CONFIG = {
       role: "Sniper",
       icon: "assets/towers/Håkon.png",
       price: 310,
-      range: 360,
+      range: 200,
       damage: 135,
       cooldown: 105,
       bulletSpeed: 15,
@@ -193,7 +193,7 @@ const GAME_CONFIG = {
       },
       upgrades: {
         damage: { maxLevel: 6, costBase: 145, costGrowth: 1.90, valueGrowth: 1.24 },
-        range: { maxLevel: 7, costBase: 110, costGrowth: 1.72, valueGrowth: 1.11 },
+        range: { maxLevel: 4, costBase: 110, costGrowth: 1.72, valueGrowth: 1.11 },
         speed: { maxLevel: 5, costBase: 150, costGrowth: 1.92, cooldownMultiplier: 0.91 }
       },
       description: "Treig, presis og sterk mot armored og boss-fiender."
@@ -205,10 +205,10 @@ const GAME_CONFIG = {
       icon: "assets/towers/Bergh.png",
       unlockCost: 2500,
       price: 900,
-      range: 430,
-      damage: 260,
-      cooldown: 42,
-      bulletSpeed: 18,
+      range: 200,
+      damage: 200,
+      cooldown: 50,
+      bulletSpeed: 10,
       bulletSize: 9,
       color: "#ef4444",
       projectile: "laser",
@@ -225,15 +225,15 @@ const GAME_CONFIG = {
         icon: "assets/abilities/board-bomb.svg",
         type: "boardBomb",
         effectIcon: "assets/effects/atom-bomb.svg",
-        cooldown: 1500,
-        damage: 1600,
+        cooldown: 2500,
+        damage: 700,
         armorPierce: 80,
         description: "Bomber hele brettet og treffer alle fiender."
       },
       upgrades: {
-        damage: { maxLevel: 5, costBase: 260, costGrowth: 2.05, valueGrowth: 1.14 },
-        range: { maxLevel: 4, costBase: 210, costGrowth: 1.90, valueGrowth: 1.07 },
-        speed: { maxLevel: 4, costBase: 280, costGrowth: 2.10, cooldownMultiplier: 0.93 }
+        damage: { maxLevel: 5, costBase: 260, costGrowth: 3.05, valueGrowth: 1.14 },
+        range: { maxLevel: 3, costBase: 210, costGrowth: 2.90, valueGrowth: 1.07 },
+        speed: { maxLevel: 3, costBase: 280, costGrowth: 3.10, cooldownMultiplier: 0.93 }
       },
       description: "Hemmelig supertårn. Ekstrem skade, splash, pierce og en ability som bomber hele brettet."
     }
@@ -243,9 +243,9 @@ const GAME_CONFIG = {
     drone: {
       name: "Drone",
       icon: "assets/enemies/drone.svg",
-      hp: 55,
+      hp: 70,
       speed: 2.10,
-      reward: 12,
+      reward: 10,
       damage: 2,
       size: 30,
       color: "#38bdf8"
@@ -254,9 +254,9 @@ const GAME_CONFIG = {
     swarm: {
       name: "Swarm",
       icon: "assets/enemies/drone.svg",
-      hp: 30,
+      hp: 40,
       speed: 2.15,
-      reward: 8,
+      reward: 6,
       damage: 1,
       size: 24,
       color: "#facc15"
@@ -265,9 +265,9 @@ const GAME_CONFIG = {
     missile: {
       name: "Missile",
       icon: "assets/enemies/missile.svg",
-      hp: 160,
+      hp: 200,
       speed: 2.5,
-      reward: 22,
+      reward: 18,
       damage: 4,
       size: 36,
       color: "#fb7185",
@@ -277,9 +277,9 @@ const GAME_CONFIG = {
     fighter: {
       name: "Fighter",
       icon: "assets/enemies/fighter.svg",
-      hp: 275,
+      hp: 600,
       speed: 2.40,
-      reward: 30,
+      reward: 23,
       damage: 5,
       size: 40,
       color: "#c084fc",
@@ -289,9 +289,9 @@ const GAME_CONFIG = {
     eliteFighter: {
       name: "Elite Fighter",
       icon: "assets/enemies/fighter.svg",
-      hp: 850,
+      hp: 1000,
       speed: 1.45,
-      reward: 95,
+      reward: 60,
       damage: 10,
       size: 58,
       color: "#f0abfc",
@@ -302,9 +302,9 @@ const GAME_CONFIG = {
     armored: {
       name: "Armored",
       icon: "assets/enemies/missile.svg",
-      hp: 300,
+      hp: 500,
       speed: 1.15,
-      reward: 48,
+      reward: 37,
       damage: 5,
       size: 46,
       color: "#94a3b8",
@@ -315,9 +315,9 @@ const GAME_CONFIG = {
     regenerator: {
       name: "Regenerator",
       icon: "assets/enemies/drone.svg",
-      hp: 270,
+      hp: 400,
       speed: 1.75,
-      reward: 42,
+      reward: 34,
       damage: 5,
       size: 42,
       color: "#4ade80",
@@ -328,13 +328,13 @@ const GAME_CONFIG = {
     boss: {
       name: "Simonsen",
       icon: "assets/enemies/Simonsen.png",
-      hp: 3500,
-      speed: 0.9,
-      reward: 220,
+      hp: 5000,
+      speed: 1.3,
+      reward: 160,
       damage: 20,
-      size: 72,
+      size: 90,
       color: "#f97316",
-      armor: 24,
+      armor: 30,
       children: { type: "fighter", count: 4 }
     }
   },
@@ -345,7 +345,7 @@ const GAME_CONFIG = {
       costBase: 70,
       costGrowth: 1.72,
       valueGrowth: 1.15,
-      maxLevel: 6
+      maxLevel: 5
     },
 
     range: {
@@ -353,7 +353,7 @@ const GAME_CONFIG = {
       costBase: 60,
       costGrowth: 1.62,
       valueGrowth: 1.17,
-      maxLevel: 6
+      maxLevel: 5
     },
 
     speed: {
@@ -361,7 +361,7 @@ const GAME_CONFIG = {
       costBase: 80,
       costGrowth: 1.75,
       cooldownMultiplier: 0.70,
-      maxLevel: 6
+      maxLevel: 5
     }
   },
 
