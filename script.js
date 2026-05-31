@@ -175,7 +175,7 @@ function getEnemyHpMultiplier() {
 
   const wavesAfter40 = wave - 40;
 
-  return 1 + wavesAfter40 * 0.08;
+  return 1 + wavesAfter40 * 0.05;
 }
 class Enemy {
   constructor(type, options = {}) {
