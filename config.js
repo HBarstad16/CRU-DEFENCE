@@ -121,8 +121,8 @@ const GAME_CONFIG = {
       },
       upgrades: {
         damage: { maxLevel: 6, costBase: 115, costGrowth: 1.82, valueGrowth: 1.20 },
-        range: { maxLevel: 6, costBase: 90, costGrowth: 1.70, valueGrowth: 1.12 },
-        speed: { maxLevel: 5, costBase: 125, costGrowth: 1.88, cooldownMultiplier: 0.95 }
+        range: { maxLevel: 4, costBase: 90, costGrowth: 1.70, valueGrowth: 1.12 },
+        speed: { maxLevel: 4, costBase: 125, costGrowth: 1.88, cooldownMultiplier: 0.95 }
       },
       description: "Dyr, men har splash damage og lang rekkevidde."
     },
@@ -172,7 +172,7 @@ const GAME_CONFIG = {
       role: "Sniper",
       icon: "assets/towers/Håkon.png",
       price: 310,
-      range: 200,
+      range: 250,
       damage: 135,
       cooldown: 105,
       bulletSpeed: 15,
@@ -195,7 +195,7 @@ const GAME_CONFIG = {
       },
       upgrades: {
         damage: { maxLevel: 6, costBase: 145, costGrowth: 1.90, valueGrowth: 1.24 },
-        range: { maxLevel: 4, costBase: 110, costGrowth: 1.72, valueGrowth: 1.11 },
+        range: { maxLevel: 6, costBase: 110, costGrowth: 1.72, valueGrowth: 1.11 },
         speed: { maxLevel: 5, costBase: 150, costGrowth: 1.92, cooldownMultiplier: 0.91 }
       },
       description: "Treig, presis og sterk mot armored og boss-fiender."
@@ -206,7 +206,7 @@ const GAME_CONFIG = {
       role: "Hemmelig",
       icon: "assets/towers/Bergh.png",
       unlockCost: 6000,
-      price: 1500,
+      price: 2000,
       range: 200,
       damage: 200,
       cooldown: 50,
@@ -233,7 +233,7 @@ const GAME_CONFIG = {
         description: "Bomber hele brettet og treffer alle fiender."
       },
       upgrades: {
-        damage: { maxLevel: 5, costBase: 260, costGrowth: 3.05, valueGrowth: 1.14 },
+        damage: { maxLevel: 3, costBase: 260, costGrowth: 3.05, valueGrowth: 1.14 },
         range: { maxLevel: 3, costBase: 210, costGrowth: 2.90, valueGrowth: 1.07 },
         speed: { maxLevel: 3, costBase: 280, costGrowth: 3.10, cooldownMultiplier: 0.93 }
       },
