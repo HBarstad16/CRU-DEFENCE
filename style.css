@@ -466,6 +466,12 @@ button:disabled {
   border-color: #7f1d1d;
 }
 
+.tower-card.limit-reached {
+  opacity: 0.62;
+  border-color: #64748b;
+  cursor: not-allowed;
+}
+
 .tower-card.locked img {
   filter: grayscale(1) brightness(0.75);
 }
