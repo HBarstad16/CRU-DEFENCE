@@ -51,7 +51,7 @@ small {
   grid-column: 1 / -1;
   display: grid;
   grid-template-columns: 140px 330px minmax(220px, 1fr) 135px 145px 170px 180px;
-  gap: 10px;
+  gap: 12px;
   align-items: center;
   max-height: none;
   overflow: visible;
@@ -59,7 +59,7 @@ small {
 
 .top-bar h1 {
   align-self: center;
-  font-size: 22px;
+  font-size: 20px;
   white-space: nowrap;
 }
 
@@ -70,7 +70,7 @@ small {
 .top-bar .boss-panel,
 .top-bar .achievement-panel {
   min-height: 44px;
-  padding: 8px;
+  padding: 10px;
 }
 
 .top-bar .achievement-panel h2 {
