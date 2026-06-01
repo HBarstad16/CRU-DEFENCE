@@ -345,7 +345,7 @@ const GAME_CONFIG = {
 
     eliteFighter: {
       name: "Elite Fighter",
-      icon: "assets/enemies/fighter.svg",
+      icon: "assets/enemies/fighter1.svg",
       hp: 1000,
       speed: 1.45,
       reward: 60,
