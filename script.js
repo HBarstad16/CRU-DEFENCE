@@ -1533,17 +1533,22 @@ function createAbilityFolder(type, towersInFolder) {
   folder.className = "ability-folder";
 
   folder.innerHTML = `
-    <div class="ability-folder-header">
+    <button class="ability-folder-header" type="button">
       <img src="${towerConfig.icon}" alt="${towerConfig.name}">
       <span>
         <strong>${towerConfig.name}</strong>
         <small>${towersInFolder.length} ability${towersInFolder.length === 1 ? "" : "s"}</small>
       </span>
-    </div>
+    </button>
     <div class="ability-folder-content"></div>
   `;
 
+  const header = folder.querySelector(".ability-folder-header");
   const content = folder.querySelector(".ability-folder-content");
+
+  header.addEventListener("click", () => {
+    folder.classList.toggle("open");
+  });
 
   towersInFolder.forEach((tower, index) => {
     content.appendChild(createAbilityCard(tower, index));
