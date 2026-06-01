@@ -751,3 +751,41 @@ button:disabled {
   font-size: 15px;
   padding: 12px 18px;
 }
+
+.ability-folder {
+  border: 1px solid rgba(148, 163, 184, 0.35);
+  border-radius: 12px;
+  background: rgba(15, 23, 42, 0.75);
+  overflow: hidden;
+  margin-bottom: 8px;
+}
+
+.ability-folder-header {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  padding: 10px;
+  cursor: pointer;
+}
+
+.ability-folder-header img {
+  width: 34px;
+  height: 34px;
+  object-fit: contain;
+}
+
+.ability-folder-header span {
+  display: flex;
+  flex-direction: column;
+}
+
+.ability-folder-content {
+  display: none;
+  padding: 8px;
+  gap: 6px;
+}
+
+.ability-folder:hover .ability-folder-content {
+  display: flex;
+  flex-direction: column;
+}

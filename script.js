@@ -1494,8 +1494,18 @@ function updateAbilityList() {
     return;
   }
 
-  abilityTowers.forEach((tower, index) => {
-    abilityList.appendChild(createAbilityCard(tower, index));
+  const groupedAbilities = {};
+
+  abilityTowers.forEach(tower => {
+    if (!groupedAbilities[tower.type]) {
+      groupedAbilities[tower.type] = [];
+    }
+
+    groupedAbilities[tower.type].push(tower);
+  });
+
+  Object.entries(groupedAbilities).forEach(([type, towersInFolder]) => {
+    abilityList.appendChild(createAbilityFolder(type, towersInFolder));
   });
 }
 
@@ -1514,6 +1524,32 @@ function updateWavePreview() {
     `;
     wavePreviewList.appendChild(item);
   });
+}
+
+function createAbilityFolder(type, towersInFolder) {
+  const towerConfig = GAME_CONFIG.towers[type];
+
+  const folder = document.createElement("div");
+  folder.className = "ability-folder";
+
+  folder.innerHTML = `
+    <div class="ability-folder-header">
+      <img src="${towerConfig.icon}" alt="${towerConfig.name}">
+      <span>
+        <strong>${towerConfig.name}</strong>
+        <small>${towersInFolder.length} ability${towersInFolder.length === 1 ? "" : "s"}</small>
+      </span>
+    </div>
+    <div class="ability-folder-content"></div>
+  `;
+
+  const content = folder.querySelector(".ability-folder-content");
+
+  towersInFolder.forEach((tower, index) => {
+    content.appendChild(createAbilityCard(tower, index));
+  });
+
+  return folder;
 }
 
 function updateBossBar() {
