@@ -351,7 +351,7 @@ const GAME_CONFIG = {
       childSpacing: 64
     },
     
-bomber: {
+    bomber: {
       name: "Bomber",
       icon: "assets/enemies/Bomber.png",
       hp: 3500,
@@ -435,7 +435,7 @@ bomber: {
   },
 
   waves: [
-    { name: "Wave 1", groups: [{ type: "drone", count: 12, gap: 42 }] },
+    { name: "Wave 1", groups: [{ type: "drone", count: 12, gap: 42 },{type: "bomber", count: 12, gap: 42}] },
     { name: "Wave 2", groups: [{ type: "swarm", count: 18, gap: 28 }, { type: "drone", count: 8, gap: 38 }] },
     { name: "Wave 3", groups: [{ type: "drone", count: 24, gap: 28 }] },
     { name: "Wave 4", groups: [{ type: "swarm", count: 32, gap: 20 }, { type: "drone", count: 10, gap: 30 }] },
