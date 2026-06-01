@@ -332,7 +332,7 @@ const GAME_CONFIG = {
       speed: 2.40,
       reward: 23,
       damage: 5,
-      size: 80,
+      size: 60,
       color: "#c084fc",
       children: { type: "drone", count: 4 },
       childSpacing: 54
@@ -345,7 +345,7 @@ const GAME_CONFIG = {
       speed: 1.45,
       reward: 60,
       damage: 10,
-      size: 80,
+      size: 60,
       color: "#f0abfc",
       armor: 12,
       children: { type: "fighter", count: 2 },
