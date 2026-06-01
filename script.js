@@ -656,7 +656,7 @@ class Tower {
     }
 
     ctx.beginPath();
-    ctx.arc(this.x, this.y, 26, 0, Math.PI * 2);
+    ctx.arc(this.x, this.y, 17, 0, Math.PI * 2);
     ctx.fillStyle = "#0f172a";
     ctx.fill();
     ctx.strokeStyle = isSelected ? "#facc15" : isHovered ? "#bfdbfe" : this.color;
