@@ -683,7 +683,11 @@ class Tower {
       ctx.save();
       ctx.translate(this.x, this.y);
       ctx.rotate(this.rotation);
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
       ctx.drawImage(img, -width / 2, -height / 2, width, height);
+      ctx.restore();
       ctx.restore();
     }
 
