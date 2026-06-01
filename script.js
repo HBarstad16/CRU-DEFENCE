@@ -364,7 +364,7 @@ class Tower {
     this.chainDamageMultiplier = stats.chainDamageMultiplier || 0.5;
 
     this.levels = { damage: 1, range: 1, speed: 1 };
-    this.size = 94;
+    this.size = stats.size || 94;
     this.kills = 0;
   }
 
