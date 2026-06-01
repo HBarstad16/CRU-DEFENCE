@@ -1453,6 +1453,9 @@ function createAbilityCard(tower, index) {
 
   button.addEventListener("pointerdown", (event) => {
     event.preventDefault();
+
+    abilityHoverTower = null;
+
     tower.activateAbility();
     updateAbilityList();
   });
@@ -1471,6 +1474,10 @@ function createAbilityCard(tower, index) {
   if (abilityHoverTower === tower) {
     abilityHoverTower = null;
     }
+  });
+
+  button.addEventListener("click", () => {
+    abilityHoverTower = null;
   });
 
   return button;
