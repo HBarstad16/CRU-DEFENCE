@@ -188,6 +188,7 @@ class Enemy {
     this.stats = stats;
     this.x = options.x ?? GAME_CONFIG.map.path[0].x;
     this.y = options.y ?? GAME_CONFIG.map.path[0].y;
+    this.rotation = 0;
     this.pathIndex = options.pathIndex ?? 0;
     this.distanceTravelled = options.distanceTravelled ?? 0;
 
@@ -229,6 +230,7 @@ class Enemy {
     const dx = target.x - this.x;
     const dy = target.y - this.y;
     const distance = Math.hypot(dx, dy);
+    this.rotation = Math.atan2(dy, dx) + Math.PI / 2;
 
     if (distance <= this.speed) {
       this.distanceTravelled += distance;
@@ -280,7 +282,11 @@ class Enemy {
     ctx.shadowBlur = this.slowTimer > 0 ? 16 : 6;
 
     if (img && img.complete) {
-      ctx.drawImage(img, this.x - this.size / 2, this.y - this.size / 2, this.size, this.size);
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+      ctx.drawImage(img, -this.size / 2, -this.size / 2, this.size, this.size);
+      ctx.restore();
     } else {
       ctx.beginPath();
       ctx.arc(this.x, this.y, this.size / 2, 0, Math.PI * 2);
