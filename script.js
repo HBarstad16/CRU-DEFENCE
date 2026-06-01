@@ -1869,10 +1869,10 @@ function giveMoney(amount = 10000) {
 
 window.addEventListener("keydown", (event) => {
 
-  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "u") {
+  if (event.altKey && event.shiftKey && event.key.toLowerCase() === "m") {
     event.preventDefault();
     giveMoney(10000);
-  }  
+  }
   
   if (event.code === "Space") {
     event.preventDefault();
