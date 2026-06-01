@@ -1440,6 +1440,12 @@ function createAbilityCard(tower, index) {
     }
   });
 
+  button.addEventListener("pointercancel", () => {
+  if (abilityHoverTower === tower) {
+    abilityHoverTower = null;
+    }
+  });
+
   return button;
 }
 
