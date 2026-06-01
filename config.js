@@ -441,7 +441,7 @@ const GAME_CONFIG = {
   },
 
   waves: [
-    { name: "Wave 1", groups: [{ type: "drone", count: 12, gap: 42 }, { type: "bomber", count: 12, gap: 42 }, { type: "fighter", count: 12, gap: 42 }, { type: "swarm", count: 12, gap: 42 }, { type: "missile", count: 12, gap: 42 }] },
+    { name: "Wave 1", groups: [{ type: "drone", count: 12, gap: 42 }] },
     { name: "Wave 2", groups: [{ type: "swarm", count: 18, gap: 28 }, { type: "drone", count: 8, gap: 38 }] },
     { name: "Wave 3", groups: [{ type: "drone", count: 24, gap: 28 }] },
     { name: "Wave 4", groups: [{ type: "swarm", count: 32, gap: 20 }, { type: "drone", count: 10, gap: 30 }] },
@@ -478,7 +478,7 @@ const GAME_CONFIG = {
     { name: "Wave 35", groups: [{ type: "boss", count: 3, gap: 145 }, { type: "eliteFighter", count: 8, gap: 42 }, { type: "swarm", count: 80, gap: 6 }] },
     { name: "Wave 36", groups: [{ type: "missile", count: 70, gap: 9 }, { type: "regenerator", count: 22, gap: 20 }] },
     { name: "Wave 37", groups: [{ type: "armored", count: 32, gap: 18 }, { type: "eliteFighter", count: 16, gap: 34 }] },
-    { name: "Wave 38", groups: [{ type: "fighter", count: 56, gap: 10 }, { type: "eliteFighter", count: 18, gap: 30 }, { type: "swarm", count: 90, gap: 5 }] },
+    { name: "Wave 38", groups: [{ type: "bomber", count: 15, gap: 10 }, { type: "eliteFighter", count: 18, gap: 30 }, { type: "swarm", count: 90, gap: 5 }] },
     { name: "Wave 39", groups: [{ type: "boss", count: 4, gap: 120 }, { type: "eliteFighter", count: 18, gap: 28 }, { type: "regenerator", count: 26, gap: 18 }] },
     { name: "Wave 40", groups: [{ type: "boss", count: 6, gap: 100 }, { type: "eliteFighter", count: 24, gap: 24 }, { type: "armored", count: 34, gap: 16 }, { type: "swarm", count: 120, gap: 4 }] }
   ]
