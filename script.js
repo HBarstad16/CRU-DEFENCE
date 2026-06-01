@@ -400,11 +400,17 @@ class Tower {
       const dx = target.x - this.x;
       const dy = target.y - this.y;
 
-      this.rotation = Math.atan2(dy, dx) - Math.PI / 2;
+      if (Math.abs(dx) > Math.abs(dy)) {
+    // Enemy er mest til venstre eller høyre
+        this.rotation = dx > 0 ? Math.PI / 2 : -Math.PI / 2;
+      } else {
+    // Enemy er mest over eller under
+        this.rotation = dy > 0 ? Math.PI : 0;
+      }
 
       bullets.push(new Bullet(this, target));
       this.cooldown = Math.max(5, Math.round(this.cooldownMax * this.fireRateMultiplier));
-    }   
+    }
   }
 
   findTarget() {
