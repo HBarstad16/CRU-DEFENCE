@@ -350,7 +350,21 @@ const GAME_CONFIG = {
       children: { type: "fighter", count: 2 },
       childSpacing: 64
     },
-
+    
+bomber: {
+      name: "Bomber",
+      icon: "assets/enemies/Bomber.png",
+      hp: 3500,
+      speed: 1.0,
+      reward: 60,
+      damage: 30,
+      size: 70,
+      color: "#f0abfc",
+      armor: 30,
+      children: { type: "fighter", count: 4 },
+      childSpacing: 64
+    },
+    
     armored: {
       name: "Armored",
       icon: "assets/enemies/missile.svg",
@@ -382,7 +396,7 @@ const GAME_CONFIG = {
     boss: {
       name: "Simonsen",
       icon: "assets/enemies/Simonsen.png",
-      hp: 5000,
+      hp: 6000,
       speed: 1.3,
       reward: 160,
       damage: 20,
