@@ -326,7 +326,7 @@ const GAME_CONFIG = {
 
     fighter: {
       name: "Fighter",
-      icon: "assets/enemies/fighter.svg",
+      icon: "assets/enemies/fighter1.svg",
       hp: 550,
       speed: 2.40,
       reward: 23,
