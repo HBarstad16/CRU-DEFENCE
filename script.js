@@ -328,6 +328,7 @@ class Tower {
     this.x = x;
     this.y = y;
     this.type = type;
+    this.rotation = 0;
     this.name = stats.name;
     this.role = stats.role;
     this.color = stats.color;
@@ -393,12 +394,17 @@ class Tower {
       this.cooldown--;
       return;
     }
-
+    
     const target = this.findTarget();
     if (target) {
+      const dx = target.x - this.x;
+      const dy = target.y - this.y;
+
+      this.rotation = Math.atan2(dy, dx) + Math.PI / 2;
+
       bullets.push(new Bullet(this, target));
       this.cooldown = Math.max(5, Math.round(this.cooldownMax * this.fireRateMultiplier));
-    }
+    }   
   }
 
   findTarget() {
@@ -667,7 +673,12 @@ class Tower {
       const aspect = img.naturalWidth && img.naturalHeight ? img.naturalWidth / img.naturalHeight : 1;
       const width = aspect >= 1 ? this.size : this.size * aspect;
       const height = aspect >= 1 ? this.size / aspect : this.size;
-      ctx.drawImage(img, this.x - width / 2, this.y - height / 2, width, height);
+
+      ctx.save();
+      ctx.translate(this.x, this.y);
+      ctx.rotate(this.rotation);
+      ctx.drawImage(img, -width / 2, -height / 2, width, height);
+      ctx.restore();
     }
 
     const totalLevel = this.levels.damage + this.levels.range + this.levels.speed - 2;
