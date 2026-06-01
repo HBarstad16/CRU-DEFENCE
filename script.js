@@ -1453,10 +1453,8 @@ function createAbilityCard(tower, index) {
 
   button.addEventListener("pointerdown", (event) => {
     event.preventDefault();
-    selectedPlacedTower = tower;
     tower.activateAbility();
     updateAbilityList();
-    updatePlacedTowerInfo();
   });
 
   button.addEventListener("pointerenter", () => {
