@@ -1861,7 +1861,19 @@ sellTowerBtn.addEventListener("click", () => {
   updateUI();
 });
 
+function giveMoney(amount = 10000) {
+  money += amount;
+  updateUI();
+  showMessage(`Du fikk ${formatMoney(amount)}.`);
+}
+
 window.addEventListener("keydown", (event) => {
+
+  if (event.ctrlKey && event.shiftKey && event.key.toLowerCase() === "u") {
+    event.preventDefault();
+    giveMoney(10000);
+  }  
+  
   if (event.code === "Space") {
     event.preventDefault();
     if (!waveRunning) startWave();
