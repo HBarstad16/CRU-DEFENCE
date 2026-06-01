@@ -369,49 +369,55 @@ class Tower {
     this.kills = 0;
   }
 
-  update() {
-    if (this.abilityCooldown > 0) {
-      this.abilityCooldown--;
+aimAtTarget(target) {
+  if (!target) return;
+
+  const dx = target.x - this.x;
+  const dy = target.y - this.y;
+
+  this.rotation = Math.atan2(dy, dx) - Math.PI / 2;
+}
+
+
+update() {
+  if (this.abilityCooldown > 0) {
+    this.abilityCooldown--;
+  }
+
+  if (this.abilityActiveTimer > 0) {
+    this.abilityActiveTimer--;
+
+    if (this.ability?.type === "infernoLaser") {
+      this.updateInfernoLaser();
     }
 
-    if (this.abilityActiveTimer > 0) {
-      this.abilityActiveTimer--;
-      if (this.ability?.type === "infernoLaser") {
-        this.updateInfernoLaser();
-      }
-      if (this.abilityActiveTimer === 0) {
-        this.damageMultiplier = 1;
-        this.fireRateMultiplier = 1;
-        this.beamTarget = null;
-        this.beamRamp = 1;
-        if (this === selectedPlacedTower) {
-          showMessage(`${this.ability.name} er ferdig.`);
-        }
+    if (this.abilityActiveTimer === 0) {
+      this.damageMultiplier = 1;
+      this.fireRateMultiplier = 1;
+      this.beamTarget = null;
+      this.beamRamp = 1;
+
+      if (this === selectedPlacedTower) {
+        showMessage(`${this.ability.name} er ferdig.`);
       }
     }
+  }
 
-    if (this.cooldown > 0) {
-      this.cooldown--;
-      return;
-    }
-    
-    const target = this.findTarget();
-    if (target) {
-      const dx = target.x - this.x;
-      const dy = target.y - this.y;
+  if (this.cooldown > 0) {
+    this.cooldown--;
+  }
 
-      if (Math.abs(dx) > Math.abs(dy)) {
-    // Enemy er mest til venstre eller høyre
-        this.rotation = dx > 0 ? Math.PI / 2 : -Math.PI / 2;
-      } else {
-    // Enemy er mest over eller under
-        this.rotation = dy > 0 ? Math.PI : 0;
-      }
+  const target = this.findTarget();
 
+  if (target) {
+    this.aimAtTarget(target);
+
+    if (this.cooldown <= 0) {
       bullets.push(new Bullet(this, target));
       this.cooldown = Math.max(5, Math.round(this.cooldownMax * this.fireRateMultiplier));
     }
   }
+}
 
   findTarget() {
     const candidates = enemies.filter(enemy => enemy.alive && Math.hypot(enemy.x - this.x, enemy.y - this.y) <= this.range);
@@ -683,11 +689,7 @@ class Tower {
       ctx.save();
       ctx.translate(this.x, this.y);
       ctx.rotate(this.rotation);
-      ctx.save();
-      ctx.translate(this.x, this.y);
-      ctx.rotate(this.rotation);
       ctx.drawImage(img, -width / 2, -height / 2, width, height);
-      ctx.restore();
       ctx.restore();
     }
 
