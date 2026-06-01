@@ -1671,7 +1671,6 @@ function updateUI() {
   updateBossBar();
   updateAchievements();
   updatePlacedTowerInfo();
-  updateAbilityList();
 }
 
 function distanceToSegment(point, a, b) {
@@ -1854,6 +1853,7 @@ canvas.addEventListener("click", (event) => {
 
   const tower = new Tower(pendingPlacement.x, pendingPlacement.y, pendingPlacement.type);
   towers.push(tower);
+  updateAbilityList();
   selectedPlacedTower = tower;
   selectedTowerType = null;
   pendingPlacement = null;
@@ -1915,6 +1915,7 @@ sellTowerBtn.addEventListener("click", () => {
   if (!selectedPlacedTower) return;
   const value = selectedPlacedTower.getSellValue();
   towers = towers.filter(tower => tower !== selectedPlacedTower);
+  updateAbilityList();
   money += value;
   showMessage(`Solgte tårn for ${formatMoney(value)}.`);
   selectedPlacedTower = null;
@@ -2073,7 +2074,6 @@ function gameLoop() {
     if (selectedPlacedTower) {
       updatePlacedTowerInfo();
     }
-    updateAbilityList();
     updateBossBar();
     updateAchievements();
   }
