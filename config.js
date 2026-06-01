@@ -64,7 +64,7 @@ const GAME_CONFIG = {
       icon: "assets/towers/Leah.png",
       price: 180,
       maxPlaced: 10,
-      size: 90,
+      size: 130,
       range: 130,
       damage: 18,
       cooldown: 16,
