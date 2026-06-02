@@ -32,6 +32,16 @@ const upgradeDamageBtn = document.getElementById("upgradeDamageBtn");
 const upgradeRangeBtn = document.getElementById("upgradeRangeBtn");
 const upgradeSpeedBtn = document.getElementById("upgradeSpeedBtn");
 
+const startOverlay = document.getElementById("startOverlay");
+const playerNameInput = document.getElementById("playerNameInput");
+const startGameBtn = document.getElementById("startGameBtn");
+
+const scoreboardOverlay = document.getElementById("scoreboardOverlay");
+const finalScoreText = document.getElementById("finalScoreText");
+const finalWaveText = document.getElementById("finalWaveText");
+const scoreboardList = document.getElementById("scoreboardList");
+const playAgainBtn = document.getElementById("playAgainBtn");
+
 const targetModes = ["first", "strong", "close", "last"];
 const targetModeLabels = {
   first: "First",
@@ -55,6 +65,10 @@ let towers = [];
 let bullets = [];
 let effects = [];
 let spawnQueue = [];
+
+let playerName = localStorage.getItem("playerName") || "";
+let gameStarted = false;
+let scoreSubmitted = false;
 
 let selectedTowerType = null;
 let selectedPlacedTower = null;
@@ -252,6 +266,7 @@ class Enemy {
     if (lives <= 0) {
       gameOver = true;
       paused = false;
+      handleGameOverScoreboard();
     }
     updateUI();
   }
@@ -1295,6 +1310,11 @@ function drawPlacementGhost() {
 }
 
 function startWave() {
+  if (!gameStarted) {
+    showMessage("Skriv inn navn og trykk Start game først.");
+    return;
+  }
+
   if (waveRunning || gameOver || victory) return;
 
   resetAbilityTimers();
@@ -2027,6 +2047,9 @@ function restartGame() {
   gameOver = false;
   victory = false;
   paused = false;
+  scoreSubmitted = false;
+  gameStarted = true;
+  scoreboardOverlay.classList.add("hidden");
   speedMultiplier = 1;
   bossKills = 0;
   unlockedAchievements.clear();
@@ -2110,6 +2133,129 @@ function gameLoop() {
   }
 
   requestAnimationFrame(gameLoop);
+}
+
+function startGameWithName() {
+  const name = playerNameInput.value.trim();
+
+  if (!name) {
+    showMessage("Skriv inn player name først.");
+    playerNameInput.focus();
+    return;
+  }
+
+  playerName = name.slice(0, 18);
+  localStorage.setItem("playerName", playerName);
+
+  gameStarted = true;
+  scoreSubmitted = false;
+
+  startOverlay.classList.add("hidden");
+  scoreboardOverlay.classList.add("hidden");
+
+  showMessage(`Velkommen, ${playerName}. Trykk Start wave.`);
+}
+
+function submitFinalScore() {
+  if (scoreSubmitted) return;
+  if (!playerName) return;
+
+  scoreSubmitted = true;
+
+  db.collection("scores").add({
+    name: playerName,
+    score: score,
+    wave: wave,
+    bossKills: bossKills,
+    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+  })
+  .then(() => {
+    loadScores();
+  })
+  .catch(error => {
+    console.error(error);
+    scoreboardList.textContent = "Kunne ikke sende score.";
+  });
+}
+
+function showScoreboard() {
+  finalScoreText.textContent = `Score: ${score}`;
+  finalWaveText.textContent = `Wave: ${wave}`;
+  scoreboardOverlay.classList.remove("hidden");
+  loadScores();
+}
+
+function loadScores() {
+  scoreboardList.textContent = "Loading...";
+
+  db.collection("scores")
+    .orderBy("score", "desc")
+    .limit(10)
+    .get()
+    .then(snapshot => {
+      scoreboardList.innerHTML = "";
+
+      if (snapshot.empty) {
+        scoreboardList.textContent = "Ingen scores enda.";
+        return;
+      }
+
+      let place = 1;
+
+      snapshot.forEach(doc => {
+        const data = doc.data();
+
+        const row = document.createElement("div");
+        row.className = "scoreboard-row";
+
+        row.innerHTML = `
+          <strong>#${place}</strong>
+          <span>
+            ${escapeHtml(data.name || "Player")}
+            <small>Wave ${data.wave || 0}</small>
+          </span>
+          <strong>${data.score || 0}</strong>
+        `;
+
+        scoreboardList.appendChild(row);
+        place++;
+      });
+    })
+    .catch(error => {
+      console.error(error);
+      scoreboardList.textContent = "Kunne ikke hente scoreboard.";
+    });
+}
+
+function escapeHtml(text) {
+  return String(text)
+    .replaceAll("&", "&amp;")
+    .replaceAll("<", "&lt;")
+    .replaceAll(">", "&gt;")
+    .replaceAll('"', "&quot;")
+    .replaceAll("'", "&#039;");
+}
+
+function handleGameOverScoreboard() {
+  submitFinalScore();
+  showScoreboard();
+}
+
+startGameBtn.addEventListener("click", startGameWithName);
+
+playerNameInput.addEventListener("keydown", (event) => {
+  if (event.key === "Enter") {
+    startGameWithName();
+  }
+});
+
+playAgainBtn.addEventListener("click", () => {
+  scoreboardOverlay.classList.add("hidden");
+  restartGame();
+});
+
+if (playerNameInput) {
+  playerNameInput.value = playerName;
 }
 
 createTowerMenu();

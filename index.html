@@ -7,7 +7,33 @@
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
+  <div id="startOverlay" class="start-overlay">
+    <div class="start-card">
+      <h1>Tower Defense</h1>
+      <p>Skriv inn navn før du starter.</p>
+
+      <input id="playerNameInput" type="text" placeholder="Player name" maxlength="18">
+
+      <button id="startGameBtn">Start game</button>
+    </div>
+  </div>
+
+  <div id="scoreboardOverlay" class="scoreboard-overlay hidden">
+    <div class="scoreboard-card">
+      <h1>Game Over</h1>
+
+      <p id="finalScoreText">Score: 0</p>
+      <p id="finalWaveText">Wave: 1</p>
+
+      <h2>Top 10</h2>
+      <div id="scoreboardList" class="scoreboard-list">Loading...</div>
+
+      <button id="playAgainBtn">Play again</button>
+    </div>
+  </div>
+
   <main class="app">
+    
     <section class="top-bar panel">
       <h1>CRU Defence</h1>
 
@@ -97,29 +123,34 @@
         <button id="sellTowerBtn" class="danger-btn">Selg</button>
       </div>
     </aside>
+    
   </main>
 
   <div id="achievementToast" class="achievement-toast hidden"></div>
+
+  <div id="achievementToast" class="achievement-toast hidden"></div>
+
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
+  <script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore-compat.js"></script>
+
+  <script>
+    const firebaseConfig = {
+      apiKey: "AIzaSyAt_wqP09oAdtTUQORX-jmWQYxf6T9PTNM",
+      authDomain: "towers-91caf.firebaseapp.com",
+      projectId: "towers-91caf",
+      storageBucket: "towers-91caf.firebasestorage.app",
+      messagingSenderId: "575317295144",
+      appId: "1:575317295144:web:580a7f4bbe1d45141b351d",
+      measurementId: "G-2RRELTC0FB"
+    };
+    
+    firebase.initializeApp(firebaseConfig);
+    const db = firebase.firestore();
+  </script>
 
   <script src="config.js"></script>
   <script src="script.js"></script>
 </body>
 </html>
 
-<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-app-compat.js"></script>
-<script src="https://www.gstatic.com/firebasejs/12.14.0/firebase-firestore-compat.js"></script>
 
-<script>
-  const firebaseConfig = {
-    apiKey: "AIzaSyAt_wqP09oAdtTUQORX-jmWQYxf6T9PTNM",
-    authDomain: "towers-91caf.firebaseapp.com",
-    projectId: "towers-91caf",
-    storageBucket: "towers-91caf.firebasestorage.app",
-    messagingSenderId: "575317295144",
-    appId: "1:575317295144:web:580a7f4bbe1d45141b351d",
-    measurementId: "G-2RRELTC0FB"
-  };
-
-  firebase.initializeApp(firebaseConfig);
-  const db = firebase.firestore();
-</script>

@@ -799,3 +799,95 @@ button:disabled {
   display: flex;
   flex-direction: column;
 }
+
+.start-overlay,
+.scoreboard-overlay {
+  position: fixed;
+  inset: 0;
+  z-index: 100;
+  display: grid;
+  place-items: center;
+  background: rgba(2, 6, 23, 0.88);
+}
+
+.start-card,
+.scoreboard-card {
+  width: min(420px, calc(100vw - 28px));
+  padding: 22px;
+  background: #172033;
+  border: 1px solid #475569;
+  border-radius: 14px;
+  box-shadow: 0 24px 80px rgba(0, 0, 0, 0.55);
+  text-align: center;
+}
+
+.start-card h1,
+.scoreboard-card h1 {
+  margin-bottom: 10px;
+  color: #f8fafc;
+}
+
+.start-card p,
+.scoreboard-card p {
+  color: #cbd5e1;
+  font-weight: 700;
+}
+
+.start-card input {
+  width: 100%;
+  min-height: 44px;
+  margin: 14px 0 10px;
+  padding: 10px 12px;
+  background: #0f172a;
+  border: 1px solid #475569;
+  border-radius: 8px;
+  color: #f8fafc;
+  font-size: 16px;
+  font-weight: 800;
+  text-align: center;
+}
+
+.start-card button,
+.scoreboard-card button {
+  width: 100%;
+}
+
+.scoreboard-list {
+  display: grid;
+  gap: 7px;
+  margin: 12px 0 14px;
+  max-height: 330px;
+  overflow-y: auto;
+}
+
+.scoreboard-row {
+  display: grid;
+  grid-template-columns: 44px 1fr auto;
+  gap: 8px;
+  align-items: center;
+  padding: 9px;
+  background: #0f172a;
+  border: 1px solid #334155;
+  border-radius: 8px;
+  text-align: left;
+}
+
+.scoreboard-row strong {
+  color: #f8fafc;
+}
+
+.scoreboard-row span {
+  color: #e2e8f0;
+  font-weight: 800;
+}
+
+.scoreboard-row small {
+  display: block;
+  margin-top: 3px;
+  color: #94a3b8;
+  font-size: 11px;
+}
+
+.hidden {
+  display: none !important;
+}
