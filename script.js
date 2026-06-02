@@ -651,6 +651,8 @@ update() {
       });
     }
 
+
+
     if (this.ability.type === "boardBomb") {
       effects.push(new BoardBombEffect(this.color, images[`ability-effect-${this.type}`]));
       enemies.forEach(enemy => {

@@ -226,7 +226,7 @@ const GAME_CONFIG = {
       range: 250,
       damage: 135,
       cooldown: 70,
-      bulletSpeed: 15,
+      bulletSpeed: 20,
       bulletSize: 6,
       color: "#a78bfa",
       projectile: "laser",
@@ -251,6 +251,45 @@ const GAME_CONFIG = {
       },
       description: "Treig, presis og sterk mot armored og boss-fiender."
     },
+
+
+    reksten: {
+      name: "reksten",
+      role: "Chief",
+      unlockCost: 2500,
+      icon: "sjefCRU.png",
+      price: 10000,
+      size: 130,
+      maxPlaced: 1,
+      range: 400,
+      damage: 300,
+      cooldown: 40,
+      bulletSpeed: 2,
+      bulletSize: 20,
+      color: "#a78bfa",
+      projectile: "laser",
+      projectileIcon: "assets/projectiles/laser.svg",
+      hitEffect: "explosion"
+      armorPierce: 30,
+      ability: {
+        name: "SjefCRU",
+        icon: "assets/abilities/airstrike.svg",
+        type: "airstrike",
+        cooldown: 1000,
+        damage: 420,
+        armorPierce: 40,
+        maxTargets: 75,
+        description: "Presis luftangrep mot de fiendene som har kommet lengst."
+      },
+      upgrades: {
+        damage: { maxLevel: 6, costBase: 145, costGrowth: 1.90, valueGrowth: 1.24 },
+        range: { maxLevel: 7, costBase: 110, costGrowth: 1.72, valueGrowth: 1.11 },
+        speed: { maxLevel: 5, costBase: 150, costGrowth: 1.92, cooldownMultiplier: 0.85 }
+      },
+      description: "Treig, presis og sterk mot armored og boss-fiender."
+    },
+
+
 
     bergh: {
       name: "Bergh og Erna",
