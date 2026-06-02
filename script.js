@@ -1507,37 +1507,6 @@ function createAbilityCard(tower, index) {
   return button;
 }
 
-  button.addEventListener("pointerdown", (event) => {
-    event.preventDefault();
-
-    tower.activateAbility();
-
-    updatePlacedTowerInfo();
-  });
-
-  button.addEventListener("pointerenter", () => {
-    abilityHoverTower = tower;
-  });
-
-  button.addEventListener("pointerleave", () => {
-  if (abilityHoverTower === tower) {
-    abilityHoverTower = null;
-    }
-  });
-
-  button.addEventListener("pointercancel", () => {
-  if (abilityHoverTower === tower) {
-    abilityHoverTower = null;
-    }
-  });
-
-  button.addEventListener("click", () => {
-    abilityHoverTower = null;
-  });
-
-  return button;
-}
-
 function updateAbilityList() {
   const abilityTowers = towers.filter(tower => tower.ability);
   abilityList.innerHTML = "";
