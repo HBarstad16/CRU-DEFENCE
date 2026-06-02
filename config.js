@@ -256,13 +256,13 @@ const GAME_CONFIG = {
       name: "Reksten",
       role: "Sjef",
       icon: "assets/towers/sjefCRU.png",
-      price: 1000,
-      size: 100,
-      maxPlaced: 4,
+      price: 5000,
+      size: 80,
+      maxPlaced: 1,
       range: 250,
-      damage: 135,
-      cooldown: 70,
-      bulletSpeed: 20,
+      damage: 20,
+      cooldown: 20,
+      bulletSpeed: 30,
       bulletSize: 6,
       color: "#a78bfa",
       projectile: "laser",
@@ -282,9 +282,9 @@ const GAME_CONFIG = {
         description: "Gir alle tårn i radius 50% mer skade og raskere cooldown i 7 sekunder."
       },
       upgrades: {
-        damage: { maxLevel: 6, costBase: 145, costGrowth: 1.90, valueGrowth: 1.24 },
-        range: { maxLevel: 7, costBase: 110, costGrowth: 1.72, valueGrowth: 1.11 },
-        speed: { maxLevel: 5, costBase: 150, costGrowth: 1.92, cooldownMultiplier: 0.85 }
+        damage: { maxLevel: 1, costBase: 145, costGrowth: 1.90, valueGrowth: 1.24 },
+        range: { maxLevel: 1, costBase: 110, costGrowth: 1.72, valueGrowth: 1.11 },
+        speed: { maxLevel: 1, costBase: 150, costGrowth: 1.92, cooldownMultiplier: 0.85 }
       },
       description: "Treig, presis og sterk mot armored og boss-fiender."
     },
