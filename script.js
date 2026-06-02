@@ -70,7 +70,7 @@ let playerName = localStorage.getItem("playerName") || "";
 let gameStarted = false;
 let scoreSubmitted = false;
 
-
+let gameFrame = 0;
 
 let selectedTowerType = null;
 let selectedPlacedTower = null;
@@ -200,7 +200,7 @@ class Enemy {
     const scale = options.scale || getWaveScale();
     const hpMultiplier = getEnemyHpMultiplier();
 
-    
+    this.tornadoHitFrame = -1;
     this.type = type;
     this.stats = stats;
     this.x = options.x ?? GAME_CONFIG.map.path[0].x;
@@ -360,6 +360,9 @@ class Tower {
     this.beamRamp = 1;
     this.damageMultiplier = 1;
     this.fireRateMultiplier = 1;
+    this.boostTimer = 0;
+    this.boostDamageMultiplier = 1;
+    this.boostFireRateMultiplier = 1;
     this.spent = stats.price;
     this.targetMode = "first";
 
@@ -398,6 +401,14 @@ aimAtTarget(target) {
 
 
 update() {
+  if (this.boostTimer > 0) {
+  this.boostTimer--;
+
+  if (this.boostTimer <= 0) {
+    this.boostDamageMultiplier = 1;
+    this.boostFireRateMultiplier = 1;
+  }
+}
   if (this.abilityCooldown > 0) {
     this.abilityCooldown--;
   }
@@ -432,7 +443,7 @@ update() {
 
     if (this.cooldown <= 0) {
       bullets.push(new Bullet(this, target));
-      this.cooldown = Math.max(5, Math.round(this.cooldownMax * this.fireRateMultiplier));
+      this.cooldown = Math.max(5, Math.round(this.cooldownMax * this.fireRateMultiplier * this.boostFireRateMultiplier));
     }
   }
 }
@@ -651,7 +662,26 @@ update() {
       });
     }
 
+    if (this.ability.type === "towerBoost") {
+      const boostedTowers = towers.filter(tower =>
+        tower !== this &&
+        Math.hypot(tower.x - this.x, tower.y - this.y) <= this.ability.radius
+      );
 
+      boostedTowers.forEach(tower => {
+        tower.boostTimer = this.ability.duration;
+        tower.boostDamageMultiplier = this.ability.damageMultiplier;
+        tower.boostFireRateMultiplier = this.ability.fireRateMultiplier;
+
+        effects.push(new RingEffect(tower.x, tower.y, tower.range, this.color));
+        effects.push(new ParticleBurst(tower.x, tower.y, this.color, 10, "spark"));
+      });
+
+      ffects.push(new RingEffect(this.x, this.y, this.ability.radius, this.color));
+      effects.push(new ParticleBurst(this.x, this.y, this.color, 30, "spark"));
+
+      showMessage(`${this.name}: ${this.ability.name}! ${boostedTowers.length} tårn boostet.`);
+    }
 
     if (this.ability.type === "boardBomb") {
       effects.push(new BoardBombEffect(this.color, images[`ability-effect-${this.type}`]));
@@ -727,7 +757,12 @@ class Bullet {
     this.y = tower.y;
     this.source = tower;
     this.target = target;
-    this.damage = Math.round(tower.damage * tower.damageMultiplier * (options.damageMultiplier || 1));
+    this.damage = Math.round(
+      tower.damage *
+      tower.damageMultiplier *
+      tower.boostDamageMultiplier *
+      (options.damageMultiplier || 1)
+    );
     this.speed = tower.bulletSpeed;
     this.size = tower.bulletSize;
     this.color = tower.color;
@@ -1108,11 +1143,15 @@ class LightningTornadoEffect {
 
     if (this.tickTimer <= 0) {
       enemies.forEach(enemy => {
-        if (!enemy.alive || Math.hypot(enemy.x - this.x, enemy.y - this.y) > this.ability.radius) return;
-        moveEnemyToPathDistance(enemy, enemy.distanceTravelled - (this.ability.pushDistance || 6));
-        applySlow(enemy, 12, 0.25);
-        effects.push(new LaserStrike(this.x, this.y, enemy.x, enemy.y, "#facc15"));
-      });
+      if (!enemy.alive || Math.hypot(enemy.x - this.x, enemy.y - this.y) > this.ability.radius) return;
+
+      if (enemy.tornadoHitFrame === gameFrame) return;
+      enemy.tornadoHitFrame = gameFrame;
+
+      moveEnemyToPathDistance(enemy, enemy.distanceTravelled - (this.ability.pushDistance || 6));
+      applySlow(enemy, 12, 0.25);
+      effects.push(new LaserStrike(this.x, this.y, enemy.x, enemy.y, "#facc15"));
+    });
       this.tickTimer = this.ability.tickRate;
     }
 
@@ -1351,6 +1390,9 @@ function resetAbilityTimers() {
     tower.fireRateMultiplier = 1;
     tower.beamTarget = null;
     tower.beamRamp = 1;
+    tower.boostTimer = 0;
+    tower.boostDamageMultiplier = 1;
+    tower.boostFireRateMultiplier = 1;
   });
   effects = effects.filter(effect => !(effect instanceof LightningTornadoEffect));
   updateAbilityList();
@@ -2119,6 +2161,7 @@ function gameLoop() {
 
   if (!paused && !gameOver && !victory) {
     for (let i = 0; i < speedMultiplier; i++) {
+      gameFrame++;
       updateGameStep();
     }
 

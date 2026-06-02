@@ -271,14 +271,15 @@ const GAME_CONFIG = {
       pierce: 2,
       armorPierce: 18,
       ability: {
-        name: "RIZZ Laser",
-        icon: "assets/abilities/airstrike.svg",
-        type: "airstrike",
-        cooldown: 1000,
-        damage: 420,
-        armorPierce: 40,
-        maxTargets: 75,
-        description: "Presis luftangrep mot de fiendene som har kommet lengst."
+        name: "Sjefsboost",
+        icon: "assets/abilities/afterburner.svg",
+        type: "towerBoost",
+        cooldown: 1200,
+        duration: 420,
+        radius: 250,
+        damageMultiplier: 1.5,
+        fireRateMultiplier: 0.65,
+        description: "Gir alle tårn i radius 50% mer skade og raskere cooldown i 7 sekunder."
       },
       upgrades: {
         damage: { maxLevel: 6, costBase: 145, costGrowth: 1.90, valueGrowth: 1.24 },
