@@ -1,5 +1,5 @@
 const GAME_CONFIG = {
-  startingLives: 70,
+  startingLives: 120,
   startingMoney: 400,
   waveBonus: 100,
   maxWaves: 100,
