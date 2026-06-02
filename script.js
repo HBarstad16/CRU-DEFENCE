@@ -1446,23 +1446,25 @@ function updateSelectedTowerInfo() {
   `;
 }
 
-function createAbilityCard(tower, index) {
-  const button = document.createElement("button");
+function updateAbilityButton(button, tower, index) {
   const towerConfig = GAME_CONFIG.towers[tower.type];
   const abilityIcon = tower.ability.icon || towerConfig.icon;
+
   const isReady = tower.canUseAbility();
   const isLocked = !tower.isAbilityUnlocked();
   const isActive = tower.abilityActiveTimer > 0;
+
   const cooldownText = isLocked
     ? "Låst: alle upgrades Lv 3"
     : isActive
-    ? `Aktiv ${Math.ceil(tower.abilityActiveTimer / 60)}s`
-    : tower.abilityCooldown > 0
-      ? `${Math.ceil(tower.abilityCooldown / 60)}s cooldown`
-      : "Klar";
+      ? `Aktiv ${Math.ceil(tower.abilityActiveTimer / 60)}s`
+      : tower.abilityCooldown > 0
+        ? `${Math.ceil(tower.abilityCooldown / 60)}s cooldown`
+        : "Klar";
 
   button.className = `ability-card ${isReady ? "ready" : ""} ${isActive ? "active" : ""} ${isLocked ? "locked" : ""}`;
   button.setAttribute("aria-disabled", String(!isReady));
+
   button.innerHTML = `
     <img src="${abilityIcon}" alt="${tower.ability.name}">
     <span>
@@ -1470,6 +1472,40 @@ function createAbilityCard(tower, index) {
       <span>${tower.name} - ${cooldownText}</span>
     </span>
   `;
+}
+
+function createAbilityCard(tower, index) {
+  const button = document.createElement("button");
+
+  updateAbilityButton(button, tower, index);
+
+  button.addEventListener("pointerdown", (event) => {
+    event.preventDefault();
+
+    tower.activateAbility();
+
+    updateAbilityButton(button, tower, index);
+    updatePlacedTowerInfo();
+  });
+
+  button.addEventListener("pointerenter", () => {
+    abilityHoverTower = tower;
+  });
+
+  button.addEventListener("pointerleave", () => {
+    if (abilityHoverTower === tower) {
+      abilityHoverTower = null;
+    }
+  });
+
+  button.addEventListener("pointercancel", () => {
+    if (abilityHoverTower === tower) {
+      abilityHoverTower = null;
+    }
+  });
+
+  return button;
+}
 
   button.addEventListener("pointerdown", (event) => {
     event.preventDefault();
