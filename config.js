@@ -256,7 +256,7 @@ const GAME_CONFIG = {
       name: "Reksten",
       role: "Sniper",
       icon: "assets/towers/sjefCRU.png",
-      price: 200,
+      price: 1000000,
       size: 130,
       maxPlaced: 4,
       range: 250,
