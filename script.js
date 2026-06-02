@@ -70,6 +70,8 @@ let playerName = localStorage.getItem("playerName") || "";
 let gameStarted = false;
 let scoreSubmitted = false;
 
+
+
 let selectedTowerType = null;
 let selectedPlacedTower = null;
 let hoveredTower = null;
@@ -83,6 +85,7 @@ let paused = false;
 let speedMultiplier = 1;
 let mouse = { x: 0, y: 0, inside: false };
 let abilityListFrame = 0;
+let abilityButtonRefs = [];
 
 const achievementDefinitions = [
   { id: "wave10", label: "Overlev wave 10", check: () => wave > 10 || victory },
@@ -1479,6 +1482,12 @@ function createAbilityCard(tower, index) {
 
   updateAbilityButton(button, tower, index);
 
+  abilityButtonRefs.push({
+    button,
+    tower,
+    index
+  });
+
   button.addEventListener("pointerdown", (event) => {
     event.preventDefault();
 
@@ -1508,6 +1517,8 @@ function createAbilityCard(tower, index) {
 }
 
 function updateAbilityList() {
+  abilityButtonRefs = [];
+
   const abilityTowers = towers.filter(tower => tower.ability);
   abilityList.innerHTML = "";
 
@@ -1535,6 +1546,12 @@ function updateAbilityList() {
 
   Object.entries(groupedAbilities).forEach(([type, towersInFolder]) => {
     abilityList.appendChild(createAbilityFolder(type, towersInFolder));
+  });
+}
+
+function updateVisibleAbilityButtons() {
+  abilityButtonRefs.forEach(ref => {
+    updateAbilityButton(ref.button, ref.tower, ref.index);
   });
 }
 
@@ -2106,8 +2123,16 @@ function gameLoop() {
     if (selectedPlacedTower) {
       updatePlacedTowerInfo();
     }
+
     updateBossBar();
     updateAchievements();
+
+    abilityListFrame++;
+
+    if (abilityListFrame >= 15) {
+      updateVisibleAbilityButtons();
+      abilityListFrame = 0;
+    }
   }
 
   towers.forEach(tower => tower.draw());
