@@ -390,7 +390,7 @@ aimAtTarget(target) {
   const dx = target.x - this.x;
   const dy = target.y - this.y;
 
-  this.rotation = Math.atan2(dy, dx) - Math.PI / 2;
+  this.rotation = Math.atan2(dy, dx) + Math.PI / 2;
 }
 
 
