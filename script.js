@@ -1475,13 +1475,8 @@ function createAbilityCard(tower, index) {
     event.preventDefault();
 
     tower.activateAbility();
-    updateAbilityList();
 
-    abilityHoverTower = null;
-
-    setTimeout(() => {
-      abilityHoverTower = null;
-    }, 0);
+    updatePlacedTowerInfo();
   });
 
   button.addEventListener("pointerenter", () => {
